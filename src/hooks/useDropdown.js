@@ -6,5 +6,3 @@ export function useDropdown() {
   const close = useCallback(() => setOpen(false), []);
   return { open, toggle, close };
 }
-
-

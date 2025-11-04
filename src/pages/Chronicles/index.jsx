@@ -6,13 +6,19 @@ export default function ChroniclesIndex() {
     <main>
       <h2>Chronicles</h2>
       <ul>
-        <li><Link to="/chronicles/sessions">Сессии</Link></li>
-        <li><Link to="/chronicles/key-events">Ключевые события</Link></li>
-        <li><Link to="/chronicles/timeline">Временная шкала</Link></li>
-        <li><Link to="/chronicles/quotes">Цитаты</Link></li>
+        <li>
+          <Link to="/chronicles/sessions">Сессии</Link>
+        </li>
+        <li>
+          <Link to="/chronicles/key-events">Ключевые события</Link>
+        </li>
+        <li>
+          <Link to="/chronicles/timeline">Временная шкала</Link>
+        </li>
+        <li>
+          <Link to="/chronicles/quotes">Цитаты</Link>
+        </li>
       </ul>
     </main>
   );
 }
-
-

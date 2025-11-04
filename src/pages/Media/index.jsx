@@ -6,11 +6,13 @@ export default function MediaIndex() {
     <main>
       <h2>Media</h2>
       <ul>
-        <li><Link to="/media/gallery">Галерея</Link></li>
-        <li><Link to="/media/music">Музыка</Link></li>
+        <li>
+          <Link to="/media/gallery">Галерея</Link>
+        </li>
+        <li>
+          <Link to="/media/music">Музыка</Link>
+        </li>
       </ul>
     </main>
   );
 }
-
-

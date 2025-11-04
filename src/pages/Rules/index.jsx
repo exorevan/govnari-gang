@@ -6,11 +6,13 @@ export default function RulesIndex() {
     <main>
       <h2>Rules</h2>
       <ul>
-        <li><Link to="/rules/homebrew">Хоумбрю</Link></li>
-        <li><Link to="/rules/mechanics">Механики</Link></li>
+        <li>
+          <Link to="/rules/homebrew">Хоумбрю</Link>
+        </li>
+        <li>
+          <Link to="/rules/mechanics">Механики</Link>
+        </li>
       </ul>
     </main>
   );
 }
-
-

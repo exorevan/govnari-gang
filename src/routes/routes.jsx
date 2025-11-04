@@ -49,7 +49,10 @@ export default function RoutesRoot() {
 
       <Route path="/characters" element={<CharactersIndex />} />
       <Route path="/characters/players" element={<PlayerCharactersPage />} />
-      <Route path="/characters/players/:id" element={<PlayerCharacterDetail />} />
+      <Route
+        path="/characters/players/:id"
+        element={<PlayerCharacterDetail />}
+      />
       <Route path="/characters/npcs" element={<NPCsPage />} />
       <Route path="/characters/npcs/:id" element={<NPCDetail />} />
       <Route path="/characters/allies" element={<AlliesPage />} />
@@ -91,5 +94,3 @@ export default function RoutesRoot() {
     </Routes>
   );
 }
-
-

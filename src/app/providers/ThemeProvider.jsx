@@ -1,6 +1,9 @@
 import React, { createContext, useMemo, useState } from "react";
 
-export const ThemeContext = createContext({ theme: "light", setTheme: () => {} });
+export const ThemeContext = createContext({
+  theme: "light",
+  setTheme: () => {},
+});
 
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState("light");
@@ -11,5 +14,3 @@ export function ThemeProvider({ children }) {
     </ThemeContext.Provider>
   );
 }
-
-

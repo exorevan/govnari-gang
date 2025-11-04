@@ -25,7 +25,8 @@ export default function HomePage() {
                   <h3 className={styles.eventTitle}>Битва у Старого моста</h3>
                   <div className={styles.eventDate}>12 Марта, 1492 DR</div>
                   <p className={styles.eventDesc}>
-                    Короткое описание произошедшего. Без деталей и данных, только макет текста на две строки.
+                    Короткое описание произошедшего. Без деталей и данных,
+                    только макет текста на две строки.
                   </p>
                 </div>
               </article>
@@ -55,5 +56,3 @@ export default function HomePage() {
     </>
   );
 }
-
-
