@@ -1,5 +1,4 @@
 const navigation = [
-  { label: "Главная", path: "/" },
   {
     label: "Персонажи",
     path: "/characters",

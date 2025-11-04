@@ -41,6 +41,8 @@ import MechanicsPage from "../pages/Rules/Mechanics/MechanicsPage.jsx";
 import MediaIndex from "../pages/Media/index.jsx";
 import GalleryPage from "../pages/Media/Gallery/GalleryPage.jsx";
 import MusicPage from "../pages/Media/Music/MusicPage.jsx";
+// Search
+import SearchResultsPage from "../pages/Search/SearchResultsPage.jsx";
 
 export default function RoutesRoot() {
   return (
@@ -89,6 +91,8 @@ export default function RoutesRoot() {
       <Route path="/media" element={<MediaIndex />} />
       <Route path="/media/gallery" element={<GalleryPage />} />
       <Route path="/media/music" element={<MusicPage />} />
+
+      <Route path="/search" element={<SearchResultsPage />} />
 
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
