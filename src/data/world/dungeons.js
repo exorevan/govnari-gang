@@ -5,11 +5,16 @@ export const dungeons = [
     headerImage: "/images/world/dungeons/black_keep_entrance.jpg",
     danger: 4, // 1-5
     map: "/images/world/dungeons/black_keep_map.jpg",
-    history: "Построен некромантом Эрсином. После падения хозяина превратился в логово теней.",
+    history:
+      "Построен некромантом Эрсином. После падения хозяина превратился в логово теней.",
     description: "Холодные залы, эхо шагов. Факелы гаснут сами собой.",
     keyRooms: [
       { num: 3, name: "Зал Эха", desc: "Усиление шёпота до оглушения" },
-      { num: 7, name: "Костяная библиотека", desc: "Книги из костяных пластин" },
+      {
+        num: 7,
+        name: "Костяная библиотека",
+        desc: "Книги из костяных пластин",
+      },
     ],
     inhabitants: [
       { name: "Теневой рыцарь", icon: "/images/icons/skull.png" },
@@ -17,7 +22,10 @@ export const dungeons = [
     ],
     treasures: ["Клинок Полуночи", "Печать Эрсина"],
     traps: ["Безмолвные руны", "Ловушки-иллюзии"],
-    runsHistory: ["Осада и героическая оборона ворот", "Побег по подземной реке"],
+    runsHistory: [
+      "Осада и героическая оборона ворот",
+      "Побег по подземной реке",
+    ],
   },
   {
     id: "dun-emerald-depths",
@@ -25,7 +33,8 @@ export const dungeons = [
     headerImage: "/images/world/dungeons/emerald_depths_entrance.jpg",
     danger: 3,
     map: "/images/world/dungeons/emerald_depths_map.jpg",
-    history: "Древние шахты друидов, оставленные после Великого Зеленого Исхода.",
+    history:
+      "Древние шахты друидов, оставленные после Великого Зеленого Исхода.",
     description: "Влажные стены, светящиеся мхи, журчание подземных потоков.",
     keyRooms: [
       { num: 2, name: "Зал Корней", desc: "Корни удерживают своды" },

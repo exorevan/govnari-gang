@@ -1,5 +1,7 @@
 export function normalizeText(text) {
-  return String(text || "").replace(/\s+/g, " ").trim();
+  return String(text || "")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 export function buildSnippet(text, query, opts = {}) {
@@ -17,7 +19,9 @@ export function buildSnippet(text, query, opts = {}) {
 }
 
 export function searchDocuments(documents, query) {
-  const q = String(query || "").toLowerCase().trim();
+  const q = String(query || "")
+    .toLowerCase()
+    .trim();
   if (!q) return documents;
   const scored = documents
     .map((doc) => {
@@ -35,5 +39,3 @@ export function searchDocuments(documents, query) {
     .map((x) => x.doc);
   return scored;
 }
-
-

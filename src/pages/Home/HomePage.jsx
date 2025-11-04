@@ -1,17 +1,19 @@
 import React from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Hero from "../../components/common/Hero/Hero.jsx";
 import styles from "./HomePage.module.css";
 
 export default function HomePage() {
+  const navigate = useNavigate();
   return (
     <>
       <Hero
-        title="Песнь Золотого Пламени"
+        title="Приветствую вас, Говнари!"
         subtitle="Хроники мира меча и магии. Легенды героев, тайны древних богов и города под звездами."
         height={600}
         backgroundImage="/assets/hero.jpg"
         ctaLabel="Начать путешествие"
-        onCta={() => {}}
+        onCta={() => navigate("/chronicles/sessions")}
       />
 
       <main>
@@ -38,16 +40,32 @@ export default function HomePage() {
           <div className="container">
             <div className={styles.quickGrid}>
               {[
-                { title: "Персонажи", desc: "Герои и их истории" },
-                { title: "Мир", desc: "Города, локации, легенды" },
-                { title: "Хроники", desc: "Сессии и ключевые события" },
-                { title: "Знания", desc: "Боги, фракции, история" },
+                {
+                  title: "Персонажи",
+                  desc: "Герои и их истории",
+                  path: "/characters",
+                },
+                {
+                  title: "Мир",
+                  desc: "Города, локации, легенды",
+                  path: "/world",
+                },
+                {
+                  title: "Хроники",
+                  desc: "Сессии и ключевые события",
+                  path: "/chronicles",
+                },
+                {
+                  title: "Знания",
+                  desc: "Боги, фракции, история",
+                  path: "/lore",
+                },
               ].map((x) => (
-                <a href="#" className={styles.quickItem} key={x.title}>
+                <Link to={x.path} className={styles.quickItem} key={x.title}>
                   <div className={styles.quickIcon}>⚜</div>
                   <div className={styles.quickTitle}>{x.title}</div>
                   <div className={styles.quickDesc}>{x.desc}</div>
-                </a>
+                </Link>
               ))}
             </div>
           </div>

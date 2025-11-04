@@ -146,5 +146,3 @@ export function getDocuments() {
 
   return docs;
 }
-
-

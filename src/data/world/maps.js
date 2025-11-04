@@ -16,4 +16,3 @@ export const maps = [
 ];
 
 export default maps;
-

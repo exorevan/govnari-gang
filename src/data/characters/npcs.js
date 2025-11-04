@@ -11,7 +11,10 @@ export const npcs = [
     biography:
       "Сирота из доков Вердиса, поднялась благодаря таланту. Руководит гильдией и тёмными контрактами.",
     personality: "Прагматичная, язвительная, уважает ум и дисциплину.",
-    achievements: ["Открыла зелие Быстрой Ковки", "Разорвала монополию торгового дома Ругеров"],
+    achievements: [
+      "Открыла зелие Быстрой Ковки",
+      "Разорвала монополию торгового дома Ругеров",
+    ],
     campaignMoments: ["Ночной поджог склада", "Сделка с Обществом Вуали"],
     stats: { str: 8, dex: 12, con: 10, int: 17, wis: 13, cha: 14 },
     equipment: [
@@ -19,10 +22,18 @@ export const npcs = [
       { name: "Взрывные колбы", icon: "/images/icons/bomb.png" },
     ],
     relations: [
-      { id: "pc-lyria", label: "покровитель", portrait: "/images/chars/lyria_portrait.jpg" },
+      {
+        id: "pc-lyria",
+        label: "покровитель",
+        portrait: "/images/chars/lyria_portrait.jpg",
+      },
     ],
     factions: [
-      { id: "f-veil-society", name: "Общество Вуали", icon: "/images/icons/faction-veil.png" },
+      {
+        id: "f-veil-society",
+        name: "Общество Вуали",
+        icon: "/images/icons/faction-veil.png",
+      },
     ],
     gallery: ["/images/chars/velka_1.jpg"],
   },
@@ -34,8 +45,7 @@ export const npcs = [
     symbol: "/images/icons/guard.png",
     quote: "Закон — доспех города.",
     appearance: "Шрам на щеке, козырёк шлема опущен, тяжёлый плащ стражи.",
-    biography:
-      "Вырос в нищете, прошёл войну, теперь очищает улицы от банд.",
+    biography: "Вырос в нищете, прошёл войну, теперь очищает улицы от банд.",
     personality: "Жёсткий, но справедливый. Подозрителен к магам.",
     achievements: ["Сломил банду Ночных Волков", "Организовал патруль каналов"],
     campaignMoments: ["Облава в трущобах", "Стычка на рынке"],
@@ -45,10 +55,18 @@ export const npcs = [
       { name: "Наручи порядка", icon: "/images/icons/bracers.png" },
     ],
     relations: [
-      { id: "pc-auren", label: "соперник", portrait: "/images/chars/auren_portrait.jpg" },
+      {
+        id: "pc-auren",
+        label: "соперник",
+        portrait: "/images/chars/auren_portrait.jpg",
+      },
     ],
     factions: [
-      { id: "f-city-guard", name: "Городская стража", icon: "/images/icons/guard.png" },
+      {
+        id: "f-city-guard",
+        name: "Городская стража",
+        icon: "/images/icons/guard.png",
+      },
     ],
     gallery: ["/images/chars/morvan_1.jpg"],
   },

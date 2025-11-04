@@ -49,15 +49,25 @@ export default function PlayerCharactersPage() {
                 </div>
               </div>
             </div>
-            <div style={{ padding: 12, display: "flex", gap: 8, alignItems: "center" }}>
+            <div
+              style={{
+                padding: 12,
+                display: "flex",
+                gap: 8,
+                alignItems: "center",
+              }}
+            >
               <img
                 src={pc.symbol}
                 alt="symbol"
-                style={{ width: 24, height: 24, objectFit: "contain", opacity: 0.9 }}
+                style={{
+                  width: 24,
+                  height: 24,
+                  objectFit: "contain",
+                  opacity: 0.9,
+                }}
               />
-              <em style={{ opacity: 0.8, fontSize: 13 }}>
-                “{pc.quote}”
-              </em>
+              <em style={{ opacity: 0.8, fontSize: 13 }}>“{pc.quote}”</em>
             </div>
           </Link>
         ))}

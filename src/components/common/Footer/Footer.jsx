@@ -8,10 +8,20 @@ export default function Footer() {
         <div className={styles.inner}>
           <div className={styles.copy}>© 2025 Govnary Gang</div>
           <div className={styles.socials}>
-            <a href="#" aria-label="Discord" className={styles.icon}>
+            <a
+              href="https://www.dungeonsanddragons.ru/bookfull/5ed/5e%20Players%20Handbook%20-%20Книга%20игрока%20RUS.pdf"
+              target="_blank"
+              aria-label="Книга игрока"
+              className={styles.icon}
+            >
               ◈
             </a>
-            <a href="#" aria-label="Twitter" className={styles.icon}>
+            <a
+              href="https://www.dungeonsanddragons.ru/bookfull/Tasha's%20Cauldron%20of%20Everything%20RUS.pdf"
+              target="_blank"
+              aria-label="Книга Таши"
+              className={styles.icon}
+            >
               ✦
             </a>
             <a href="#" aria-label="YouTube" className={styles.icon}>

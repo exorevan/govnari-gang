@@ -5,7 +5,10 @@ import { buildSnippet, searchDocuments } from "../../search/index.js";
 
 function useQueryParam(name) {
   const { search } = useLocation();
-  return useMemo(() => new URLSearchParams(search).get(name) || "", [search, name]);
+  return useMemo(
+    () => new URLSearchParams(search).get(name) || "",
+    [search, name],
+  );
 }
 
 export default function SearchResultsPage() {
@@ -21,7 +24,9 @@ export default function SearchResultsPage() {
       </div>
 
       {results.map((r) => {
-        const snippet = buildSnippet(r.text || r.description || "", q, { radius: 90 });
+        const snippet = buildSnippet(r.text || r.description || "", q, {
+          radius: 90,
+        });
         return (
           <article key={r.id} style={{ marginBottom: 24 }}>
             <div style={{ fontSize: 14, color: "#0b57d0" }}>
@@ -30,7 +35,9 @@ export default function SearchResultsPage() {
             <h3 style={{ margin: "4px 0" }}>
               <Link to={r.route}>{r.title}</Link>
             </h3>
-            <p style={{ margin: 0, color: "var(--text-secondary)" }}>{snippet}</p>
+            <p style={{ margin: 0, color: "var(--text-secondary)" }}>
+              {snippet}
+            </p>
           </article>
         );
       })}
@@ -41,5 +48,3 @@ export default function SearchResultsPage() {
     </main>
   );
 }
-
-
