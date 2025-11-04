@@ -1,24 +1,42 @@
-# Nestjs specific
-/dist
-/node_modules
-/build
-/tmp
+# dependencies
+node_modules/
 
-# Logs
-logs
-*.log
+# build output
+/dist/
+/build/
+/.vite/
+.vite-cache/
+
+# env
+.env
+.env.*
+!.env.example
+
+# logs
 npm-debug.log*
-pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-lerna-debug.log*
+pnpm-debug.log*
 
-# dotenv environment variable files
-.env
-.env.development
-.env.test
-.env.production
+# editors/OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
 
-# temp directory
-.temp
-.tmp
+# tests/coverage
+coverage/
+.jest-cache/
+.jest/
+
+# lockfiles (keep only one if needed)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# misc
+*.local
+*.cache
+
+
