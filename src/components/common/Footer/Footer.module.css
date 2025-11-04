@@ -1,0 +1,12 @@
+.footer { background: var(--color-bg-primary); border-top: 1px solid var(--color-border); padding: 40px 0; margin-top: 60px; }
+.inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.copy { font-size: 14px; color: var(--color-text-secondary); }
+.socials { display: flex; align-items: center; gap: 12px; }
+.icon { width: 24px; height: 24px; color: var(--color-accent-gold); text-decoration: none; display: inline-flex; align-items: center; justify-content: center; transition: var(--transition-base); }
+.icon:hover { color: var(--color-accent-gold-hover); transform: translateY(-2px); }
+
+@media (max-width: 768px) {
+  .inner { flex-direction: column; }
+}
+
+

@@ -1,3 +1,3 @@
-export const APP_NAME = "DnD Campaign";
+export const APP_NAME = "Govnary Gang";
 
 

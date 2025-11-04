@@ -1,4 +1,4 @@
-# DnD Campaign Site
+# Govnary Gang Site
 
 Проект на React (Vite) для сайта кампании DnD. Стартовый каркас по фичам/страницам.
 

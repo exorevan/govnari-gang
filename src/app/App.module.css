@@ -4,4 +4,12 @@
   flex-direction: column;
 }
 
+.content {
+  padding-top: var(--header-height-desktop);
+}
 
+@media (max-width: 768px) {
+  .content {
+    padding-top: var(--header-height-mobile);
+  }
+}

@@ -1,7 +1,86 @@
-/* глобальные стили */
-:root { --bg: #101114; --fg: #e7e7e7; }
-html, body, #root { height: 100%; }
-body { margin: 0; background: var(--bg); color: var(--fg); font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
-main { width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px; }
+/* Global styles aligned with the D&D campaign design */
+@import url('./variables.css');
 
+html, body, #root { height: 100%; }
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-family: var(--font-body), system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial;
+  line-height: 1.6;
+}
+
+/* Subtle parchment texture overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: url('/assets/textures/pergament.png');
+  background-size: 600px 600px;
+  opacity: 0.05;
+  z-index: 0;
+}
+
+#root { position: relative; z-index: 1; }
+
+main {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 40px 16px;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); margin: 0 0 12px; }
+h1 { font-size: 56px; }
+h2 { font-size: 42px; }
+h3 { font-size: 22px; }
+p { margin: 0 0 12px; }
+
+/* Links */
+a { color: var(--color-accent-gold); text-decoration: none; transition: var(--transition-base); }
+a:hover { color: var(--color-accent-gold-hover); text-decoration: underline; }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 24px; font-size: 16px; border-radius: var(--radius-button); transition: var(--transition-base); cursor: pointer; }
+.btn-primary { background: var(--color-accent-brown); color: #ffffff; border: none; }
+.btn-primary:hover { background: #a0522d; transform: scale(1.05); }
+.btn-secondary { background: transparent; color: var(--color-accent-gold); border: 1px solid var(--color-accent-gold); }
+.btn-secondary:hover { background: rgba(212, 175, 55, 0.1); }
+
+/* Utility containers */
+.container { width: 100%; max-width: var(--container-max); margin: 0 auto; padding: 0 16px; }
+.section { padding: 60px 0; }
+
+/* Cards */
+.card { background: var(--color-bg-secondary); border: 1px solid var(--color-border); border-radius: var(--radius-card); box-shadow: var(--shadow-elevated); transition: var(--transition-base); overflow: hidden; }
+.card:hover { transform: translateY(-5px); border-color: var(--color-accent-brown); }
+
+/* Grid helpers */
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
+
+/* Section Title */
+.section-title { font-size: 42px; color: var(--color-accent-gold); border-bottom: 2px solid var(--color-accent-brown); padding-bottom: 15px; margin: 0 0 40px; }
+
+/* Media */
+.media { width: 100%; height: auto; display: block; }
+
+/* Responsive */
+@media (max-width: 1200px) {
+  h1 { font-size: 48px; }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  body { font-size: 0.8rem; }
+  main { padding: 20px 16px; }
+  h1 { font-size: 40px; }
+  h2 { font-size: 32px; }
+  .grid-3, .grid-4 { grid-template-columns: 1fr; gap: 20px; }
+}
 

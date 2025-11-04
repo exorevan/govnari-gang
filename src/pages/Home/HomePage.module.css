@@ -1,0 +1,25 @@
+.eventCard { display: flex; flex-direction: column; height: 280px; }
+.eventImage { width: 100%; height: 150px; background: #444; background-image: url('/assets/placeholders/event.jpg'); background-size: cover; background-position: center; }
+.eventBody { padding: 25px; display: flex; flex-direction: column; gap: 6px; }
+.eventTitle { font-size: 20px; color: var(--color-accent-gold); margin: 0; }
+.eventDate { font-size: 14px; color: var(--color-text-secondary); }
+.eventDesc { font-size: 16px; color: var(--color-text-primary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+.quickLinksSection { background: var(--color-bg-secondary); padding: 60px 0; margin-top: 80px; }
+.quickGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
+.quickItem { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 20px; color: var(--color-text-primary); text-decoration: none; border-radius: 8px; transition: var(--transition-base); }
+.quickItem:hover { transform: translateY(-4px); }
+.quickIcon { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--color-accent-gold); display: flex; align-items: center; justify-content: center; color: var(--color-accent-gold); font-size: 32px; transition: var(--transition-base); }
+.quickItem:hover .quickIcon { transform: scale(1.1); }
+.quickTitle { margin-top: 20px; font-size: 24px; }
+.quickDesc { margin-top: 10px; font-size: 16px; color: var(--color-text-secondary); }
+
+@media (max-width: 1200px) {
+  .quickGrid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .quickGrid { grid-template-columns: 1fr; }
+}
+
+

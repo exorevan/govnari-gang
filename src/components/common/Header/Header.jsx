@@ -1,10 +1,26 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styles from "./Header.module.css";
+import Navbar from "../Navigation/Navbar.jsx";
 
 export default function Header() {
   return (
     <header className={styles.header}>
-      <h1>DnD Campaign</h1>
+      <div className={styles.inner}>
+        <Link to="/" className={styles.logo} aria-label="Главная">
+          <div className={styles.logoMark} />
+          <span className={styles.logoText}>Govnary Gang</span>
+        </Link>
+
+        <Navbar />
+
+        <div className={styles.actions}>
+          <div className={styles.search}>
+            <input type="text" placeholder="Поиск" aria-label="Поиск" />
+          </div>
+          <button className={styles.themeToggle} aria-label="Переключить тему">★</button>
+        </div>
+      </div>
     </header>
   );
 }
