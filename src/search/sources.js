@@ -17,7 +17,7 @@ import { keyEvents } from "../data/chronicles/keyEvents.js";
 import { sessions } from "../data/chronicles/sessions.js";
 
 // Lore
-import { factions } from "../data/lore/factions.js";
+import { fractions } from "../data/lore/fractions.js";
 import { gods } from "../data/lore/gods.js";
 import { history } from "../data/lore/history.js";
 
@@ -43,7 +43,7 @@ export function getDocuments() {
       id: `npc-${n.id ?? n.name}`,
       route: `/characters/npcs/${n.id ?? encodeURIComponent(n.name)}`,
       title: n.name || "NPC",
-      description: n.role || n.faction,
+      description: n.role || n.fraction,
       text: n.bio || n.description || "",
     }),
   );
@@ -52,7 +52,7 @@ export function getDocuments() {
       id: `ally-${a.id ?? a.name}`,
       route: `/characters/allies`,
       title: a.name || "Союзник",
-      description: a.role || a.faction,
+      description: a.role || a.fraction,
       text: a.bio || a.description || "",
     }),
   );
@@ -61,7 +61,7 @@ export function getDocuments() {
       id: `enemy-${e.id ?? e.name}`,
       route: `/characters/enemies`,
       title: e.name || "Враг",
-      description: e.role || e.faction,
+      description: e.role || e.fraction,
       text: e.bio || e.description || "",
     }),
   );
@@ -116,10 +116,10 @@ export function getDocuments() {
   );
 
   // Lore
-  safeArray(factions).forEach((f) =>
+  safeArray(fractions).forEach((f) =>
     docs.push({
-      id: `faction-${f.id ?? f.name}`,
-      route: `/lore/factions/${f.id ?? encodeURIComponent(f.name)}`,
+      id: `fraction-${f.id ?? f.name}`,
+      route: `/lore/fractions/${f.id ?? encodeURIComponent(f.name)}`,
       title: f.name || "Фракция",
       description: f.alignment,
       text: f.description || f.history || "",

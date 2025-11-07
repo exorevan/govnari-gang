@@ -2,6 +2,7 @@ export const playerCharacters = [
   {
     id: "pc-dr-granzh",
     name: "Доктор Гранж",
+    city: "Фонт",
     class: "Волшебник",
     race: "Человек",
     level: 4,
@@ -40,11 +41,11 @@ export const playerCharacters = [
         portrait: "/images/chars/morvan_portrait.jpg",
       },
     ],
-    factions: [
+    fractions: [
       {
-        id: "f-radiant-dawn",
-        name: "Орден Сияющего Рассвета",
-        icon: "/images/icons/faction-dawn.png",
+        id: "fr-lvitrescu",
+        name: "Банда Львитреску",
+        icon: "/images/icons/fraction-dawn.png",
       },
     ],
     gallery: ["/images/chars/auren_1.jpg", "/images/chars/auren_2.jpg"],

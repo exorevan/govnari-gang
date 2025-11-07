@@ -29,6 +29,11 @@ export default function WorldIndex() {
             img: "/images/world/dungeons/black_keep_entrance.jpg",
           },
           {
+            label: "Заведения",
+            to: "/world/establishments",
+            img: "/images/world/cities/verdis_tavern.jpg",
+          },
+          {
             label: "Карты",
             to: "/world/maps",
             img: "/images/world/maps/world.jpg",

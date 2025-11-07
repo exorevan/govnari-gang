@@ -15,8 +15,8 @@ export default function LoreIndex() {
         {[
           {
             label: "Фракции",
-            to: "/lore/factions",
-            img: "/images/lore/factions/faction_hero.jpg",
+            to: "/lore/fractions",
+            img: "/images/lore/fractions/fraction_hero.jpg",
           },
           {
             label: "Боги",

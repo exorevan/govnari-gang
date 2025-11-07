@@ -11,18 +11,6 @@ export const quotes = [
     reaction: "Смеялись",
     type: "funny",
   },
-  {
-    id: "q2",
-    text: "Щит держится, пока держится сердце.",
-    character: {
-      id: "pc-auren",
-      name: "Аурен",
-      portrait: "/images/chars/auren_portrait.jpg",
-    },
-    context: "Оборона ворот Черного замка",
-    reaction: "Ахнули",
-    type: "epic",
-  },
 ];
 
 export default quotes;

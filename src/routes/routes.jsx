@@ -17,6 +17,7 @@ import CityDetail from "../pages/World/Cities/CityDetail.jsx";
 import GeographyPage from "../pages/World/Geography/GeographyPage.jsx";
 import DungeonsPage from "../pages/World/Dungeons/DungeonsPage.jsx";
 import DungeonDetail from "../pages/World/Dungeons/DungeonDetail.jsx";
+import EstablishmentsPage from "../pages/World/Establishments/EstablishmentsPage.jsx";
 import MapsPage from "../pages/World/Maps/MapsPage.jsx";
 // Chronicles
 import ChroniclesIndex from "../pages/Chronicles/index.jsx";
@@ -27,8 +28,8 @@ import TimelinePage from "../pages/Chronicles/Timeline/TimelinePage.jsx";
 import QuotesPage from "../pages/Chronicles/Quotes/QuotesPage.jsx";
 // Lore
 import LoreIndex from "../pages/Lore/index.jsx";
-import FactionsPage from "../pages/Lore/Factions/FactionsPage.jsx";
-import FactionDetail from "../pages/Lore/Factions/FactionDetail.jsx";
+import FractionsPage from "../pages/Lore/Fractions/FractionsPage.jsx";
+import FractionDetail from "../pages/Lore/Fractions/FractionDetail.jsx";
 import GodsPage from "../pages/Lore/Gods/GodsPage.jsx";
 import GodDetail from "../pages/Lore/Gods/GodDetail.jsx";
 import HistoryPage from "../pages/Lore/History/HistoryPage.jsx";
@@ -67,6 +68,7 @@ export default function RoutesRoot() {
       <Route path="/world/geography" element={<GeographyPage />} />
       <Route path="/world/dungeons" element={<DungeonsPage />} />
       <Route path="/world/dungeons/:id" element={<DungeonDetail />} />
+      <Route path="/world/establishments" element={<EstablishmentsPage />} />
       <Route path="/world/maps" element={<MapsPage />} />
 
       <Route path="/chronicles" element={<ChroniclesIndex />} />
@@ -77,8 +79,8 @@ export default function RoutesRoot() {
       <Route path="/chronicles/quotes" element={<QuotesPage />} />
 
       <Route path="/lore" element={<LoreIndex />} />
-      <Route path="/lore/factions" element={<FactionsPage />} />
-      <Route path="/lore/factions/:id" element={<FactionDetail />} />
+      <Route path="/lore/fractions" element={<FractionsPage />} />
+      <Route path="/lore/fractions/:id" element={<FractionDetail />} />
       <Route path="/lore/gods" element={<GodsPage />} />
       <Route path="/lore/gods/:id" element={<GodDetail />} />
       <Route path="/lore/history" element={<HistoryPage />} />

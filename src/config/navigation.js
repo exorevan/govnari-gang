@@ -34,7 +34,7 @@ const navigation = [
     label: "Лор",
     path: "/lore",
     children: [
-      { label: "Фракции", path: "/lore/factions" },
+      { label: "Фракции", path: "/lore/fractions" },
       { label: "Боги", path: "/lore/gods" },
       { label: "История", path: "/lore/history" },
       { label: "Легенды", path: "/lore/legends" },

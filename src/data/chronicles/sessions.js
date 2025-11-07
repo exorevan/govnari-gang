@@ -1,6 +1,5 @@
-export const sessions = [
+const rawSessions = [
   {
-    id: "s-15",
     num: 15,
     realDate: "2025-09-21",
     gameDate: "19 Листопада 1234",
@@ -33,7 +32,6 @@ export const sessions = [
     rewards: ["+700 XP каждому", "Клинок Полуночи"],
   },
   {
-    id: "s-16",
     num: 16,
     realDate: "2025-10-05",
     gameDate: "22 Листопада 1234",
@@ -72,5 +70,34 @@ export const sessions = [
     rewards: ["+600 XP каждому", "Печать Эрсина"],
   },
 ];
+
+function normalizeSession(entry) {
+  const numberText = entry.num !== undefined ? String(entry.num) : "";
+  const sanitizedNumber = numberText.trim();
+  const slugPart = sanitizedNumber
+    .toLowerCase()
+    .replace(/[^0-9a-z]+/gi, "-")
+    .replace(/-{2,}/g, "-")
+    .replace(/^-+|-+$/g, "");
+  const id = entry.id ?? `s-${slugPart || "unnumbered"}`;
+
+  const sequence =
+    entry.sequence !== undefined
+      ? entry.sequence
+      : sanitizedNumber
+          .replace(/,/g, ".")
+          .split("-")
+          .map((part) => Number.parseFloat(part))
+          .find((value) => Number.isFinite(value));
+
+  return {
+    ...entry,
+    id,
+    num: sanitizedNumber,
+    sequence,
+  };
+}
+
+export const sessions = rawSessions.map(normalizeSession);
 
 export default sessions;

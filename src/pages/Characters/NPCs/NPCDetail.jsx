@@ -187,7 +187,7 @@ export default function NPCDetail() {
           <div style={{ marginTop: 16 }}>
             <h4 style={{ margin: "0 0 8px" }}>Фракции</h4>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              {npc.factions.map((f) => (
+              {npc.fractions.map((f) => (
                 <div
                   key={f.id}
                   style={{
