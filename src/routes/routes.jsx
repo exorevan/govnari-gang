@@ -18,6 +18,7 @@ import GeographyPage from "../pages/World/Geography/GeographyPage.jsx";
 import DungeonsPage from "../pages/World/Dungeons/DungeonsPage.jsx";
 import DungeonDetail from "../pages/World/Dungeons/DungeonDetail.jsx";
 import EstablishmentsPage from "../pages/World/Establishments/EstablishmentsPage.jsx";
+import EstablishmentDetail from "../pages/World/Establishments/EstablishmentDetail.jsx";
 import MapsPage from "../pages/World/Maps/MapsPage.jsx";
 // Chronicles
 import ChroniclesIndex from "../pages/Chronicles/index.jsx";
@@ -69,6 +70,10 @@ export default function RoutesRoot() {
       <Route path="/world/dungeons" element={<DungeonsPage />} />
       <Route path="/world/dungeons/:id" element={<DungeonDetail />} />
       <Route path="/world/establishments" element={<EstablishmentsPage />} />
+      <Route
+        path="/world/establishments/:id"
+        element={<EstablishmentDetail />}
+      />
       <Route path="/world/maps" element={<MapsPage />} />
 
       <Route path="/chronicles" element={<ChroniclesIndex />} />

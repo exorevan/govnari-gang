@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { establishments } from "../../../data/world/establishments";
 
 export default function EstablishmentsPage() {
@@ -23,9 +24,12 @@ export default function EstablishmentsPage() {
             }}
           >
             {items.map((est) => (
-              <article
+              <Link
                 key={est.id}
+                to={`/world/establishments/${est.id}`}
                 style={{
+                  textDecoration: "none",
+                  color: "inherit",
                   borderRadius: 12,
                   overflow: "hidden",
                   border: "1px solid rgba(255,255,255,0.1)",
@@ -33,6 +37,14 @@ export default function EstablishmentsPage() {
                   display: "flex",
                   flexDirection: "column",
                   minHeight: 360,
+                  cursor: "pointer",
+                  transition: "border-color 0.2s",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
                 }}
               >
                 <HeaderImage establishment={est} />
@@ -57,9 +69,11 @@ export default function EstablishmentsPage() {
                     </div>
                   </div>
 
-                  <p style={{ margin: 0, lineHeight: 1.5 }}>
-                    {est.description}
-                  </p>
+                  {est.description && (
+                    <p style={{ margin: 0, lineHeight: 1.5 }}>
+                      {est.description}
+                    </p>
+                  )}
 
                   {est.owner ? (
                     <div style={{ fontSize: 13, opacity: 0.85 }}>
@@ -70,33 +84,27 @@ export default function EstablishmentsPage() {
                   ) : null}
 
                   {est.specialties?.length ? (
-                    <DetailList title="Особенности" items={est.specialties} />
+                    <div style={{ fontSize: 13, opacity: 0.8 }}>
+                      <span style={{ opacity: 0.7 }}>Особенности:</span>{" "}
+                      {est.specialties.length} шт.
+                    </div>
                   ) : null}
 
                   {est.menu?.length ? (
-                    <DetailList title="Меню" items={est.menu} />
+                    <div style={{ fontSize: 13, opacity: 0.8 }}>
+                      <span style={{ opacity: 0.7 }}>Меню:</span>{" "}
+                      {est.menu.length} позиций
+                    </div>
                   ) : null}
 
-                  {est.notableClients?.length ? (
-                    <DetailList
-                      title="Постоянные гости"
-                      items={est.notableClients}
-                    />
-                  ) : null}
-
-                  {est.rumor ? (
-                    <div
-                      style={{
-                        fontSize: 13,
-                        opacity: 0.75,
-                        fontStyle: "italic",
-                      }}
-                    >
-                      {est.rumor}
+                  {est.services?.length ? (
+                    <div style={{ fontSize: 13, opacity: 0.8 }}>
+                      <span style={{ opacity: 0.7 }}>Услуги:</span>{" "}
+                      {est.services.length} шт.
                     </div>
                   ) : null}
                 </div>
-              </article>
+              </Link>
             ))}
           </div>
         </section>
@@ -161,35 +169,3 @@ function HeaderImage({ establishment }) {
   );
 }
 
-function DetailList({ title, items }) {
-  return (
-    <div>
-      <div
-        style={{
-          fontSize: 11,
-          opacity: 0.65,
-          textTransform: "uppercase",
-          letterSpacing: "0.08em",
-          marginBottom: 4,
-        }}
-      >
-        {title}
-      </div>
-      <ul
-        style={{
-          margin: 0,
-          paddingLeft: 18,
-          display: "flex",
-          flexDirection: "column",
-          gap: 4,
-        }}
-      >
-        {items.map((item) => (
-          <li key={item} style={{ fontSize: 13, opacity: 0.9 }}>
-            {item}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}

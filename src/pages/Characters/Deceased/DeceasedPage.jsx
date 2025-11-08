@@ -20,6 +20,14 @@ export default function DeceasedPage() {
               overflow: "hidden",
               border: "1px solid rgba(255,255,255,0.1)",
               background: "#121212",
+              cursor: "pointer",
+              transition: "border-color 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
             }}
           >
             <div

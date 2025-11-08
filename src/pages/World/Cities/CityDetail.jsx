@@ -101,35 +101,37 @@ export default function CityDetail() {
         <div>
           <Block title="История города" text={city.history} />
           <Block title="Описание" text={city.description} />
-          <div style={{ marginTop: 16 }}>
-            <h3 style={{ margin: "0 0 8px" }}>Районы</h3>
-            <div style={{ display: "grid", gap: 8 }}>
-              {city.districts.map((d) => (
-                <div
-                  key={d.name}
-                  style={{
-                    display: "flex",
-                    gap: 8,
-                    alignItems: "flex-start",
-                    background: "#111",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    borderRadius: 8,
-                    padding: 10,
-                  }}
-                >
-                  <img
-                    src={d.icon}
-                    alt="icon"
-                    style={{ width: 20, height: 20 }}
-                  />
-                  <div>
-                    <div style={{ fontWeight: 700 }}>{d.name}</div>
-                    <div style={{ opacity: 0.9 }}>{d.description}</div>
+          {city.districts && city.districts.length > 0 && (
+            <div style={{ marginTop: 16 }}>
+              <h3 style={{ margin: "0 0 8px" }}>Районы</h3>
+              <div style={{ display: "grid", gap: 8 }}>
+                {city.districts.map((d) => (
+                  <div
+                    key={d.name}
+                    style={{
+                      display: "flex",
+                      gap: 8,
+                      alignItems: "flex-start",
+                      background: "#111",
+                      border: "1px solid rgba(255,255,255,0.08)",
+                      borderRadius: 8,
+                      padding: 10,
+                    }}
+                  >
+                    <img
+                      src={d.icon}
+                      alt="icon"
+                      style={{ width: 20, height: 20 }}
+                    />
+                    <div>
+                      <div style={{ fontWeight: 700 }}>{d.name}</div>
+                      <div style={{ opacity: 0.9 }}>{d.description}</div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+          )}
           <div style={{ marginTop: 16 }}>
             <h3 style={{ margin: "0 0 8px" }}>Важные здания</h3>
             <div
