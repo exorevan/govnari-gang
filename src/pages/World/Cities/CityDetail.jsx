@@ -1,6 +1,11 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { cities } from "../../../data/world/cities";
+import { playerCharacters } from "../../../data/characters/playerCharacters";
+import { npcs } from "../../../data/characters/npcs";
+import { allies } from "../../../data/characters/allies";
+import { fractions } from "../../../data/lore/fractions";
+import { gods } from "../../../data/lore/gods";
 
 export default function CityDetail() {
   const { id } = useParams();
@@ -156,35 +161,58 @@ export default function CityDetail() {
 
         {/* Right */}
         <aside>
-          <div>
-            <h4 style={{ margin: "0 0 8px" }}>Важные НПЦ</h4>
-            <div style={{ display: "grid", gap: 8 }}>
-              {city.npcs.map((n) => (
-                <div
-                  key={n.id}
-                  style={{ display: "flex", gap: 8, alignItems: "center" }}
-                >
-                  <img
-                    src={n.portrait}
-                    alt={n.name}
-                    style={{
-                      width: 44,
-                      height: 44,
-                      borderRadius: 8,
-                      objectFit: "cover",
-                    }}
-                  />
-                  <div>
-                    <div style={{ fontWeight: 700 }}>{n.name}</div>
-                    <div style={{ opacity: 0.85, fontSize: 13 }}>{n.role}</div>
-                  </div>
-                </div>
-              ))}
+          {city.npcs?.length > 0 && (
+            <div>
+              <h4 style={{ margin: "0 0 8px" }}>Важные НПЦ</h4>
+              <div style={{ display: "grid", gap: 8 }}>
+                {city.npcs.map((n) => {
+                  const npcPath = n.id?.startsWith("npc-")
+                    ? `/characters/npcs/${n.id}`
+                    : null;
+                  const content = (
+                    <div
+                      style={{ display: "flex", gap: 8, alignItems: "center" }}
+                    >
+                      {n.portrait && (
+                        <img
+                          src={n.portrait}
+                          alt={n.name}
+                          style={{
+                            width: 44,
+                            height: 44,
+                            borderRadius: 8,
+                            objectFit: "cover",
+                          }}
+                        />
+                      )}
+                      <div>
+                        <div style={{ fontWeight: 700 }}>{n.name}</div>
+                        <div style={{ opacity: 0.85, fontSize: 13 }}>{n.role}</div>
+                      </div>
+                    </div>
+                  );
+                  return npcPath ? (
+                    <Link
+                      key={n.id}
+                      to={npcPath}
+                      style={{
+                        textDecoration: "none",
+                        color: "inherit",
+                        display: "block",
+                      }}
+                    >
+                      {content}
+                    </Link>
+                  ) : (
+                    <div key={n.id}>{content}</div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
 
-          <ListBlock title="Активные квесты" items={city.quests} />
-          <ListBlock title="Слухи и новости" items={city.news} />
+          {city.quests && <ListBlock title="Активные квесты" items={city.quests} />}
+          {city.news && <ListBlock title="Слухи и новости" items={city.news} />}
         </aside>
       </section>
 
@@ -205,15 +233,59 @@ export default function CityDetail() {
 }
 
 function Block({ title, text }) {
+  if (!text) return null;
   return (
     <div style={{ marginTop: 16 }}>
       <h3 style={{ margin: "0 0 8px" }}>{title}</h3>
-      <p style={{ margin: 0, lineHeight: 1.65 }}>{text}</p>
+      <p style={{ margin: 0, lineHeight: 1.65 }}>
+        {parseTextWithLinks(text)}
+      </p>
     </div>
   );
 }
 
+function parseTextWithLinks(text) {
+  if (!text) return text;
+
+  // Парсим markdown-ссылки вида [текст](путь)
+  const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+  let keyCounter = 0;
+
+  while ((match = linkRegex.exec(text)) !== null) {
+    // Добавляем текст до ссылки
+    if (match.index > lastIndex) {
+      parts.push(text.substring(lastIndex, match.index));
+    }
+
+    // Добавляем ссылку
+    const linkText = match[1];
+    const linkPath = match[2];
+    parts.push(
+      <Link
+        key={`link-${keyCounter++}`}
+        to={linkPath}
+        style={{ color: "#4da3ff", textDecoration: "none", fontWeight: 500 }}
+      >
+        {linkText}
+      </Link>
+    );
+
+    lastIndex = match.index + match[0].length;
+  }
+
+  // Добавляем оставшийся текст
+  if (lastIndex < text.length) {
+    parts.push(text.substring(lastIndex));
+  }
+
+  return parts.length > 0 ? parts : text;
+}
+
 function ListBlock({ title, items }) {
+  if (!items || items.length === 0) return null;
   return (
     <div style={{ marginTop: 16 }}>
       <h3 style={{ margin: "0 0 8px" }}>{title}</h3>

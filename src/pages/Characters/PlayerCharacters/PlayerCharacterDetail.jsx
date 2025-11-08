@@ -1,6 +1,11 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { playerCharacters } from "../../../data/characters/playerCharacters";
+import { npcs } from "../../../data/characters/npcs";
+import { allies } from "../../../data/characters/allies";
+import { cities } from "../../../data/world/cities";
+import { fractions } from "../../../data/lore/fractions";
+import { gods } from "../../../data/lore/gods";
 
 export default function PlayerCharacterDetail() {
   const { id } = useParams();
@@ -165,55 +170,111 @@ export default function PlayerCharacterDetail() {
             </ul>
           </div>
 
-          <div style={{ marginTop: 16 }}>
-            <h4 style={{ margin: "0 0 8px" }}>Связи</h4>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              {pc.relations.map((r) => (
-                <figure key={r.id} style={{ margin: 0, textAlign: "center" }}>
-                  <img
-                    src={r.portrait}
-                    alt={r.label}
-                    style={{
-                      width: 60,
-                      height: 60,
-                      objectFit: "cover",
-                      borderRadius: 8,
-                    }}
-                  />
-                  <figcaption style={{ fontSize: 12, opacity: 0.85 }}>
-                    {r.label}
-                  </figcaption>
-                </figure>
-              ))}
+          {pc.relations?.length > 0 && (
+            <div style={{ marginTop: 16 }}>
+              <h4 style={{ margin: "0 0 8px" }}>Связи</h4>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {pc.relations.map((r) => {
+                  const relationPath = getCharacterPath(r.id);
+                  const content = (
+                    <figure style={{ margin: 0, textAlign: "center" }}>
+                      <img
+                        src={r.portrait}
+                        alt={r.label}
+                        style={{
+                          width: 60,
+                          height: 60,
+                          objectFit: "cover",
+                          borderRadius: 8,
+                        }}
+                      />
+                      <figcaption style={{ fontSize: 12, opacity: 0.85 }}>
+                        {r.label}
+                      </figcaption>
+                    </figure>
+                  );
+                  return relationPath ? (
+                    <Link
+                      key={r.id}
+                      to={relationPath}
+                      style={{ textDecoration: "none", color: "inherit" }}
+                    >
+                      {content}
+                    </Link>
+                  ) : (
+                    <div key={r.id}>{content}</div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
 
-          <div style={{ marginTop: 16 }}>
-            <h4 style={{ margin: "0 0 8px" }}>Фракции</h4>
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              {pc.fractions.map((f) => (
-                <div
-                  key={f.id}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                    background: "#111",
-                    padding: "6px 8px",
-                    borderRadius: 8,
-                    border: "1px solid rgba(255,255,255,0.08)",
-                  }}
-                >
-                  <img
-                    src={f.icon}
-                    alt={f.name}
-                    style={{ width: 18, height: 18 }}
-                  />
-                  <span style={{ fontSize: 12 }}>{f.name}</span>
-                </div>
-              ))}
+          {pc.city && (
+            <div style={{ marginTop: 16 }}>
+              <h4 style={{ margin: "0 0 8px" }}>Город</h4>
+              {(() => {
+                const city = cities.find((c) => c.name === pc.city);
+                return city ? (
+                  <Link
+                    to={`/world/cities/${city.id}`}
+                    style={{
+                      display: "inline-block",
+                      color: "#4da3ff",
+                      textDecoration: "none",
+                    }}
+                  >
+                    {pc.city}
+                  </Link>
+                ) : (
+                  <span>{pc.city}</span>
+                );
+              })()}
             </div>
-          </div>
+          )}
+
+          {pc.fractions?.length > 0 && (
+            <div style={{ marginTop: 16 }}>
+              <h4 style={{ margin: "0 0 8px" }}>Фракции</h4>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                {pc.fractions.map((f) => {
+                  const fraction = fractions.find((fr) => fr.id === f.id);
+                  const content = (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
+                        background: "#111",
+                        padding: "6px 8px",
+                        borderRadius: 8,
+                        border: "1px solid rgba(255,255,255,0.08)",
+                      }}
+                    >
+                      {f.icon && (
+                        <img
+                          src={f.icon}
+                          alt={f.name}
+                          style={{ width: 18, height: 18 }}
+                        />
+                      )}
+                      <span style={{ fontSize: 12 }}>{f.name}</span>
+                    </div>
+                  );
+                  return fraction ? (
+                    <Link
+                      key={f.id}
+                      to={`/lore/fractions/${f.id}`}
+                      style={{ textDecoration: "none", color: "inherit" }}
+                    >
+                      {content}
+                    </Link>
+                  ) : (
+                    <div key={f.id}>{content}</div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </aside>
       </section>
     </main>
@@ -221,15 +282,59 @@ export default function PlayerCharacterDetail() {
 }
 
 function Block({ title, text }) {
+  if (!text) return null;
   return (
     <div style={{ marginTop: 16 }}>
       <h3 style={{ margin: "0 0 8px" }}>{title}</h3>
-      <p style={{ margin: 0, lineHeight: 1.65 }}>{text}</p>
+      <p style={{ margin: 0, lineHeight: 1.65 }}>
+        {parseTextWithLinks(text)}
+      </p>
     </div>
   );
 }
 
+function parseTextWithLinks(text) {
+  if (!text) return text;
+
+  // Парсим markdown-ссылки вида [текст](путь)
+  const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+  let keyCounter = 0;
+
+  while ((match = linkRegex.exec(text)) !== null) {
+    // Добавляем текст до ссылки
+    if (match.index > lastIndex) {
+      parts.push(text.substring(lastIndex, match.index));
+    }
+
+    // Добавляем ссылку
+    const linkText = match[1];
+    const linkPath = match[2];
+    parts.push(
+      <Link
+        key={`link-${keyCounter++}`}
+        to={linkPath}
+        style={{ color: "#4da3ff", textDecoration: "none", fontWeight: 500 }}
+      >
+        {linkText}
+      </Link>
+    );
+
+    lastIndex = match.index + match[0].length;
+  }
+
+  // Добавляем оставшийся текст
+  if (lastIndex < text.length) {
+    parts.push(text.substring(lastIndex));
+  }
+
+  return parts.length > 0 ? parts : text;
+}
+
 function ListBlock({ title, items, icon }) {
+  if (!items || items.length === 0) return null;
   return (
     <div style={{ marginTop: 16 }}>
       <h3 style={{ margin: "0 0 8px" }}>{title}</h3>
@@ -266,4 +371,12 @@ function ListBlock({ title, items, icon }) {
       </ul>
     </div>
   );
+}
+
+function getCharacterPath(id) {
+  if (!id) return null;
+  if (id.startsWith("pc-")) return `/characters/players/${id}`;
+  if (id.startsWith("npc-")) return `/characters/npcs/${id}`;
+  if (id.startsWith("ally-")) return `/characters/allies`;
+  return null;
 }

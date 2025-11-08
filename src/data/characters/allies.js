@@ -27,6 +27,20 @@ export const allies = [
     city: "Фонт",
     portrait: "/images/chars/topor_portrait.jpg",
   },
+  {
+    id: "ally-dezmal-eyson",
+    name: "Дезмал Эйсон",
+    role: "Союзник",
+    city: "Фонт",
+    portrait: "/images/chars/dezmal_eyson.jpg",
+    fractions: [
+      {
+        id: "f-eyson-family",
+        name: "Род Эйсонов",
+        icon: "/images/icons/fraction-eyson-manticore.png",
+      },
+    ],
+  },
 ];
 
 export default allies;

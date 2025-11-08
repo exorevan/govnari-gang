@@ -1,6 +1,12 @@
 import React from "react";
 import { useParams, Link } from "react-router-dom";
 import { sessions } from "../../../data/chronicles/sessions";
+import { playerCharacters } from "../../../data/characters/playerCharacters";
+import { npcs } from "../../../data/characters/npcs";
+import { allies } from "../../../data/characters/allies";
+import { cities } from "../../../data/world/cities";
+import { fractions } from "../../../data/lore/fractions";
+import { gods } from "../../../data/lore/gods";
 
 export default function SessionDetail() {
   const { id } = useParams();
@@ -56,26 +62,44 @@ export default function SessionDetail() {
       >
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <Block title="Краткое содержание" text={s.summary} />
-          <div style={{ marginTop: 16 }}>
-            <div style={{ fontWeight: 700, marginBottom: 8 }}>Участники</div>
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-              {s.participants.map((p) => (
-                <figure key={p.id} style={{ margin: 0, textAlign: "center" }}>
-                  <img
-                    src={p.portrait}
-                    alt={p.name}
-                    style={{
-                      width: 72,
-                      height: 72,
-                      objectFit: "cover",
-                      borderRadius: 12,
-                    }}
-                  />
-                  <figcaption style={{ marginTop: 6 }}>{p.name}</figcaption>
-                </figure>
-              ))}
+          {s.participants?.length > 0 && (
+            <div style={{ marginTop: 16 }}>
+              <div style={{ fontWeight: 700, marginBottom: 8 }}>Участники</div>
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                {s.participants.map((p) => {
+                  const participantPath = getCharacterPath(p.id);
+                  const content = (
+                    <figure style={{ margin: 0, textAlign: "center" }}>
+                      {p.portrait && (
+                        <img
+                          src={p.portrait}
+                          alt={p.name}
+                          style={{
+                            width: 72,
+                            height: 72,
+                            objectFit: "cover",
+                            borderRadius: 12,
+                          }}
+                        />
+                      )}
+                      <figcaption style={{ marginTop: 6 }}>{p.name}</figcaption>
+                    </figure>
+                  );
+                  return participantPath ? (
+                    <Link
+                      key={p.id}
+                      to={participantPath}
+                      style={{ textDecoration: "none", color: "inherit" }}
+                    >
+                      {content}
+                    </Link>
+                  ) : (
+                    <div key={p.id}>{content}</div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
           <Block title="Подробное описание" text={s.details} />
           <ListBlock title="Ключевые моменты" items={s.keyMoments} />
           <ListBlock title="Решения игроков" items={s.decisions} />
@@ -134,15 +158,59 @@ export default function SessionDetail() {
 }
 
 function Block({ title, text }) {
+  if (!text) return null;
   return (
     <div style={{ marginTop: 16 }}>
       <h3 style={{ margin: "0 0 8px" }}>{title}</h3>
-      <p style={{ margin: 0, lineHeight: 1.7 }}>{text}</p>
+      <p style={{ margin: 0, lineHeight: 1.7 }}>
+        {parseTextWithLinks(text)}
+      </p>
     </div>
   );
 }
 
+function parseTextWithLinks(text) {
+  if (!text) return text;
+
+  // Парсим markdown-ссылки вида [текст](путь)
+  const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+  let keyCounter = 0;
+
+  while ((match = linkRegex.exec(text)) !== null) {
+    // Добавляем текст до ссылки
+    if (match.index > lastIndex) {
+      parts.push(text.substring(lastIndex, match.index));
+    }
+
+    // Добавляем ссылку
+    const linkText = match[1];
+    const linkPath = match[2];
+    parts.push(
+      <Link
+        key={`link-${keyCounter++}`}
+        to={linkPath}
+        style={{ color: "#4da3ff", textDecoration: "none", fontWeight: 500 }}
+      >
+        {linkText}
+      </Link>
+    );
+
+    lastIndex = match.index + match[0].length;
+  }
+
+  // Добавляем оставшийся текст
+  if (lastIndex < text.length) {
+    parts.push(text.substring(lastIndex));
+  }
+
+  return parts.length > 0 ? parts : text;
+}
+
 function ListBlock({ title, items }) {
+  if (!items || items.length === 0) return null;
   return (
     <div style={{ marginTop: 16 }}>
       <h3 style={{ margin: "0 0 8px" }}>{title}</h3>
@@ -178,6 +246,7 @@ function ListBlock({ title, items }) {
 }
 
 function InfoCard({ title, value }) {
+  if (!value) return null;
   return (
     <div
       style={{
@@ -192,4 +261,12 @@ function InfoCard({ title, value }) {
       <div>{value}</div>
     </div>
   );
+}
+
+function getCharacterPath(id) {
+  if (!id) return null;
+  if (id.startsWith("pc-")) return `/characters/players/${id}`;
+  if (id.startsWith("npc-")) return `/characters/npcs/${id}`;
+  if (id.startsWith("ally-")) return `/characters/allies`;
+  return null;
 }
