@@ -16,22 +16,22 @@ export default function LoreIndex() {
           {
             label: "Фракции",
             to: "/lore/fractions",
-            img: "/images/lore/fractions/fraction_hero.jpg",
+            img: "/assets/images/lore/fractions/fraction_hero.jpg",
           },
           {
             label: "Боги",
             to: "/lore/gods",
-            img: "/images/lore/gods/god_hero.jpg",
+            img: "/assets/images/lore/gods/god_hero.jpg",
           },
           {
             label: "История",
             to: "/lore/history",
-            img: "/images/lore/history/history_hero.jpg",
+            img: "/assets/images/lore/history/history_hero.jpg",
           },
           {
             label: "Легенды",
             to: "/lore/legends",
-            img: "/images/lore/legends/legends_hero.jpg",
+            img: "/assets/images/lore/legends/legends_hero.jpg",
           },
         ].map((x) => (
           <Link

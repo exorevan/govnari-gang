@@ -16,12 +16,12 @@ export default function MediaIndex() {
           {
             label: "Галерея",
             to: "/media/gallery",
-            img: "/images/media/gallery_hero.jpg",
+            img: "/assets/images/media/gallery_hero.jpg",
           },
           {
             label: "Музыка",
             to: "/media/music",
-            img: "/images/media/music_hero.jpg",
+            img: "/assets/images/media/music_hero.jpg",
           },
         ].map((x) => (
           <Link

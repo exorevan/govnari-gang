@@ -16,27 +16,27 @@ export default function WorldIndex() {
           {
             label: "Города",
             to: "/world/cities",
-            img: "/images/world/cities/verdis_panorama.jpg",
+            img: "/assets/images/world/cities/verdis_panorama.jpg",
           },
           {
             label: "География",
             to: "/world/geography",
-            img: "/images/world/regions/northrange_panorama.jpg",
+            img: "/assets/images/world/regions/northrange_panorama.jpg",
           },
           {
             label: "Подземелья",
             to: "/world/dungeons",
-            img: "/images/world/dungeons/black_keep_entrance.jpg",
+            img: "/assets/images/world/dungeons/black_keep_entrance.jpg",
           },
           {
             label: "Заведения",
             to: "/world/establishments",
-            img: "/images/world/cities/verdis_tavern.jpg",
+            img: "/assets/images/world/cities/verdis_tavern.jpg",
           },
           {
             label: "Карты",
             to: "/world/maps",
-            img: "/images/world/maps/world.jpg",
+            img: "/assets/images/world/maps/world.jpg",
           },
         ].map((x) => (
           <Link

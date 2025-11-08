@@ -16,12 +16,12 @@ export default function RulesIndex() {
           {
             label: "Хоумбрю",
             to: "/rules/homebrew",
-            img: "/images/rules/homebrew_hero.jpg",
+            img: "/assets/images/rules/homebrew_hero.jpg",
           },
           {
             label: "Механики",
             to: "/rules/mechanics",
-            img: "/images/rules/mechanics_hero.jpg",
+            img: "/assets/images/rules/mechanics_hero.jpg",
           },
         ].map((x) => (
           <Link

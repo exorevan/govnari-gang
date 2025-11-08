@@ -4,9 +4,6 @@ import { sessions } from "../../../data/chronicles/sessions";
 import { playerCharacters } from "../../../data/characters/playerCharacters";
 import { npcs } from "../../../data/characters/npcs";
 import { allies } from "../../../data/characters/allies";
-import { cities } from "../../../data/world/cities";
-import { fractions } from "../../../data/lore/fractions";
-import { gods } from "../../../data/lore/gods";
 
 function findCharacter(id) {
   return (

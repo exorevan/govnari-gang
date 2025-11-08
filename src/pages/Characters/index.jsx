@@ -16,27 +16,27 @@ export default function CharactersIndex() {
           {
             label: "Игровые персонажи",
             to: "/characters/players",
-            img: "/images/chars/lyria_hero.jpg",
+            img: "/assets/images/chars/lyria_hero.jpg",
           },
           {
             label: "НПЦ",
             to: "/characters/npcs",
-            img: "/images/chars/velka_hero.jpg",
+            img: "/assets/images/chars/velka_hero.jpg",
           },
           {
             label: "Союзники",
             to: "/characters/allies",
-            img: "/images/chars/bron_portrait.jpg",
+            img: "/assets/images/chars/bron_portrait.jpg",
           },
           {
             label: "Враги",
             to: "/characters/enemies",
-            img: "/images/chars/redric_portrait.jpg",
+            img: "/assets/images/chars/redric_portrait.jpg",
           },
           {
             label: "Павшие",
             to: "/characters/deceased",
-            img: "/images/chars/eldric_hero.jpg",
+            img: "/assets/images/chars/eldric_hero.jpg",
           },
         ].map((x) => (
           <Link

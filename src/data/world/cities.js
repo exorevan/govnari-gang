@@ -3,15 +3,15 @@ export const cities = [
     id: "city-font",
     name: "Фонт",
     motto: "Город мастеров и торговцев",
-    flag: "/images/world/cities/font_flag.png",
-    panorama: "/images/world/cities/font_panorama.jpg",
-    mapSmall: "/images/world/cities/font_map_small.jpg",
-    bigMap: "/images/world/cities/font_map_big.jpg",
+    flag: "/assets/images/world/cities/font_flag.png",
+    panorama: "/assets/images/world/cities/font_panorama.jpg",
+    mapSmall: "/assets/images/world/cities/font_map_small.jpg",
+    bigMap: "/assets/images/world/cities/font_map_big.jpg",
     info: {
       population: 8500,
       ruler: {
         name: "Дарион Эйсон",
-        portrait: "/images/characters/npcs/darion_eyson.jpg",
+        portrait: "/assets/images/characters/npcs/darion_eyson.jpg",
       },
       ruleType: "Мэр",
       mainResource: "Ремесло и торговля",
@@ -22,27 +22,27 @@ export const cities = [
     buildings: [
       {
         name: "Ратуша",
-        image: "/images/world/cities/font_townhall.jpg",
+        image: "/assets/images/world/cities/font_townhall.jpg",
       },
       {
         name: 'Таверна "Гоблинский Пунш"',
-        image: "/images/world/cities/font_tavern_goblin_punch.jpg",
+        image: "/assets/images/world/cities/font_tavern_goblin_punch.jpg",
       },
       {
         name: 'Таверна "Сырный маг"',
-        image: "/images/world/cities/font_tavern_cheese_mage.jpg",
+        image: "/assets/images/world/cities/font_tavern_cheese_mage.jpg",
       },
       {
         name: 'Таверна "Три топора"',
-        image: "/images/world/cities/font_tavern_three_axes.jpg",
+        image: "/assets/images/world/cities/font_tavern_three_axes.jpg",
       },
       {
         name: "Кузня Эстелара Витретина",
-        image: "/images/world/cities/font_forge_vitretin.jpg",
+        image: "/assets/images/world/cities/font_forge_vitretin.jpg",
       },
       {
         name: "Ателье Бринья",
-        image: "/images/world/cities/font_atelier_brinya.jpg",
+        image: "/assets/images/world/cities/font_atelier_brinya.jpg",
       },
     ],
     places: [
@@ -57,19 +57,19 @@ export const cities = [
         id: "npc-darion-eyson",
         name: "Дарион Эйсон",
         role: "Мэр города Фонт",
-        portrait: "/images/characters/npcs/darion_eyson.jpg",
+        portrait: "/assets/images/characters/npcs/darion_eyson.jpg",
       },
       {
         id: "npc-estelar-vitretin",
         name: "Эстелар Витретин",
         role: "Эльф-кузнец",
-        portrait: "/images/characters/npcs/estelar_vitretin.jpg",
+        portrait: "/assets/images/characters/npcs/estelar_vitretin.jpg",
       },
       {
         id: "npc-stefania",
         name: "Стефания",
         role: "Жена Дезмала Эйсона",
-        portrait: "/images/characters/npcs/stefania.jpg",
+        portrait: "/assets/images/characters/npcs/stefania.jpg",
       },
     ],
     quests: [],

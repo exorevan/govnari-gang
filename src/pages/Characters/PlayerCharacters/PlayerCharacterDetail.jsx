@@ -83,7 +83,7 @@ export default function PlayerCharacterDetail() {
           <ListBlock
             title="Достижения"
             items={pc.achievements}
-            icon="/images/icons/trophy-gold.png"
+            icon="/assets/images/icons/trophy-gold.png"
           />
           <ListBlock
             title="Важные моменты в кампании"

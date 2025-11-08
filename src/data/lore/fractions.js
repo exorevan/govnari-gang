@@ -9,7 +9,7 @@ export const fractions = [
     name: "Род Эйсонов",
     description:
       "Знатный род, члены которого носят медальоны в виде треугольника. Символ рода — двуглавая мантикора.",
-    symbol: "/images/icons/fraction-eyson-manticore.png",
+    symbol: "/assets/images/icons/fraction-eyson-manticore.png",
   },
 ];
 

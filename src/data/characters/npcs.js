@@ -15,7 +15,7 @@ export const npcs = [
       {
         id: "f-eyson-family",
         name: "Род Эйсонов",
-        icon: "/images/icons/fraction-eyson-manticore.png",
+        icon: "/assets/images/icons/fraction-eyson-manticore.png",
       },
     ],
   },

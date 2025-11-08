@@ -4,6 +4,7 @@ import { cities } from "../../../data/world/cities";
 import { playerCharacters } from "../../../data/characters/playerCharacters";
 import { npcs } from "../../../data/characters/npcs";
 import { allies } from "../../../data/characters/allies";
+import { enemies } from "../../../data/characters/enemies";
 import { fractions } from "../../../data/lore/fractions";
 import { gods } from "../../../data/lore/gods";
 
@@ -11,247 +12,501 @@ export default function CityDetail() {
   const { id } = useParams();
   const city = cities.find((c) => c.id === id) || cities[0];
 
+  // Фильтруем союзников и противников по городу
+  const cityAllies = allies.filter(a => a.city === city.name);
+  const cityEnemies = enemies.filter(e => e.city === city.name);
+
   return (
     <main style={{ minHeight: "100%" }}>
-      {/* Top */}
+      {/* Hero Section */}
       <section
         style={{
           position: "relative",
-          height: "50vh",
+          height: "60vh",
           background: `url(${city.panorama}) center/cover no-repeat`,
         }}
       >
+        {/* Флаг в правом верхнем углу */}
+        <img
+          src={city.flag}
+          alt="flag"
+          style={{ 
+            position: "absolute",
+            top: 24,
+            right: 24,
+            width: 120,
+            height: 80,
+            objectFit: "contain",
+            background: "rgba(0, 0, 0, 0.5)",
+            padding: 12,
+            borderRadius: 8,
+            backdropFilter: "blur(10px)",
+            border: "1px solid rgba(212,175,55,0.3)",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.3)"
+          }}
+        />
+
+        {/* Градиент */}
         <div
           style={{
             position: "absolute",
             inset: 0,
-            background: "rgba(0,0,0,0.45)",
+            background: "linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7))",
           }}
         />
+
+        {/* Название города */}
         <div
           style={{
             position: "absolute",
-            bottom: 16,
-            left: 24,
-            right: 24,
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-            justifyContent: "space-between",
+            bottom: 40,
+            left: 0,
+            right: 0,
+            textAlign: "center",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <img
-              src={city.flag}
-              alt="flag"
-              style={{ width: 64, height: 64, objectFit: "contain" }}
-            />
-            <div>
-              <h1 style={{ margin: 0, fontSize: 44 }}>{city.name}</h1>
-              <div style={{ opacity: 0.9 }}>{city.motto}</div>
-            </div>
+          <h1 style={{ margin: 0, fontSize: 56, textShadow: "0 2px 8px rgba(0,0,0,0.5)" }}>
+            {city.name}
+          </h1>
+          <div style={{ fontSize: 20, opacity: 0.95, marginTop: 8, fontStyle: "italic" }}>
+            «{city.motto}»
           </div>
         </div>
       </section>
 
-      {/* Three columns */}
-      <section
-        style={{
-          display: "grid",
-          gridTemplateColumns: "320px minmax(0,1fr) 340px",
-          gap: 24,
+      {/* Main Content */}
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "48px 24px" }}>
+        
+        {/* Quick Info Cards */}
+        <section style={{ 
+          display: "grid", 
+          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", 
+          gap: 16,
+          marginBottom: 48
+        }}>
+          <InfoCard label="Население" value={city.info.population.toLocaleString()} />
+          <InfoCard label="Тип правления" value={city.info.ruleType} />
+          <InfoCard label="Основной ресурс" value={city.info.mainResource} />
+          <InfoCard label="Главная религия" value={city.info.mainReligion} />
+        </section>
+
+        {/* Ruler Section */}
+        <section style={{ 
+          background: "linear-gradient(135deg, rgba(212,175,55,0.1), rgba(212,175,55,0.05))",
+          border: "1px solid rgba(212,175,55,0.3)",
+          borderRadius: 12,
           padding: 24,
-        }}
-      >
-        {/* Left */}
-        <aside>
+          marginBottom: 48,
+          display: "flex",
+          alignItems: "center",
+          gap: 24
+        }}>
+          <img
+            src={city.info.ruler.portrait}
+            alt={city.info.ruler.name}
+            style={{
+              width: 100,
+              height: 100,
+              borderRadius: 12,
+              objectFit: "cover",
+              border: "2px solid rgba(212,175,55,0.5)"
+            }}
+          />
           <div>
-            <div style={{ fontWeight: 700, marginBottom: 8 }}>
-              Карта расположения
+            <div style={{ fontSize: 14, opacity: 0.7, marginBottom: 4 }}>Правитель</div>
+            <h2 style={{ margin: 0, fontSize: 28, color: "#d4af37" }}>
+              {city.info.ruler.name}
+            </h2>
+          </div>
+        </section>
+
+        {/* History */}
+        <TextSection title="История города" text={city.history} />
+
+        {/* Description */}
+        <TextSection title="Описание" text={city.description} />
+
+        {/* Map */}
+        <section style={{ marginBottom: 48 }}>
+          <h2 style={{ fontSize: 32, marginBottom: 16 }}>Карта города</h2>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+            <div>
+              <h3 style={{ fontSize: 18, marginBottom: 12, opacity: 0.8 }}>Расположение</h3>
+              <img
+                src={city.mapSmall}
+                alt="map"
+                style={{
+                  width: "100%",
+                  borderRadius: 12,
+                  border: "1px solid rgba(255,255,255,0.1)",
+                }}
+              />
             </div>
-            <img
-              src={city.mapSmall}
-              alt="map"
-              style={{
-                width: "100%",
-                borderRadius: 8,
-                border: "1px solid rgba(255,255,255,0.1)",
-              }}
-            />
+            <div>
+              <h3 style={{ fontSize: 18, marginBottom: 12, opacity: 0.8 }}>Детальная карта</h3>
+              <img
+                src={city.bigMap}
+                alt="city map"
+                style={{
+                  width: "100%",
+                  borderRadius: 12,
+                  border: "1px solid rgba(255,255,255,0.1)",
+                }}
+              />
+            </div>
           </div>
+        </section>
 
-          <div style={{ marginTop: 16 }}>
-            <div style={{ fontWeight: 700, marginBottom: 8 }}>Информация</div>
-            <InfoRow
-              label="Население"
-              value={city.info.population.toLocaleString()}
-            />
-            <InfoRow
-              label="Правитель"
-              value={city.info.ruler.name}
-              avatar={city.info.ruler.portrait}
-            />
-            <InfoRow label="Тип правления" value={city.info.ruleType} />
-            <InfoRow label="Основной ресурс" value={city.info.mainResource} />
-            <InfoRow label="Главная религия" value={city.info.mainReligion} />
-          </div>
-        </aside>
-
-        {/* Center */}
-        <div>
-          <Block title="История города" text={city.history} />
-          <Block title="Описание" text={city.description} />
-          {city.districts && city.districts.length > 0 && (
-            <div style={{ marginTop: 16 }}>
-              <h3 style={{ margin: "0 0 8px" }}>Районы</h3>
-              <div style={{ display: "grid", gap: 8 }}>
-                {city.districts.map((d) => (
-                  <div
-                    key={d.name}
-                    style={{
-                      display: "flex",
-                      gap: 8,
-                      alignItems: "flex-start",
-                      background: "#111",
-                      border: "1px solid rgba(255,255,255,0.08)",
-                      borderRadius: 8,
-                      padding: 10,
-                    }}
-                  >
+        {/* Districts */}
+        {city.districts && city.districts.length > 0 && (
+          <section style={{ marginBottom: 48 }}>
+            <h2 style={{ fontSize: 32, marginBottom: 16 }}>Районы города</h2>
+            <p style={{ lineHeight: 1.7, marginBottom: 24, opacity: 0.9 }}>
+              Город разделён на несколько районов, каждый из которых имеет свою уникальную атмосферу и назначение.
+            </p>
+            <div style={{ display: "grid", gap: 16 }}>
+              {city.districts.map((d) => (
+                <div
+                  key={d.name}
+                  style={{
+                    background: "#0a0a0a",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: 12,
+                    padding: 20,
+                    display: "flex",
+                    gap: 16,
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <div style={{
+                    background: "rgba(212,175,55,0.15)",
+                    padding: 12,
+                    borderRadius: 8,
+                  }}>
                     <img
                       src={d.icon}
                       alt="icon"
-                      style={{ width: 20, height: 20 }}
+                      style={{ width: 32, height: 32, display: "block" }}
                     />
-                    <div>
-                      <div style={{ fontWeight: 700 }}>{d.name}</div>
-                      <div style={{ opacity: 0.9 }}>{d.description}</div>
-                    </div>
                   </div>
-                ))}
-              </div>
-            </div>
-          )}
-          <div style={{ marginTop: 16 }}>
-            <h3 style={{ margin: "0 0 8px" }}>Важные здания</h3>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-                gap: 8,
-              }}
-            >
-              {city.buildings.map((b) => (
-                <figure key={b.name} style={{ margin: 0 }}>
-                  <img
-                    src={b.image}
-                    alt={b.name}
-                    style={{
-                      width: "100%",
-                      height: 140,
-                      objectFit: "cover",
-                      borderRadius: 8,
-                    }}
-                  />
-                  <figcaption style={{ marginTop: 6 }}>{b.name}</figcaption>
-                </figure>
+                  <div style={{ flex: 1 }}>
+                    <h3 style={{ margin: "0 0 8px", fontSize: 22 }}>{d.name}</h3>
+                    <p style={{ margin: 0, lineHeight: 1.6, opacity: 0.9 }}>
+                      {d.description}
+                    </p>
+                  </div>
+                </div>
               ))}
             </div>
+          </section>
+        )}
+
+        {/* Buildings */}
+        <section style={{ marginBottom: 48 }}>
+          <h2 style={{ fontSize: 32, marginBottom: 16 }}>Важные здания</h2>
+          <p style={{ lineHeight: 1.7, marginBottom: 24, opacity: 0.9 }}>
+            Эти здания играют ключевую роль в жизни города и его жителей.
+          </p>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+              gap: 16,
+            }}
+          >
+            {city.buildings.map((b) => (
+              <figure key={b.name} style={{ margin: 0, position: "relative", overflow: "hidden", borderRadius: 12 }}>
+                <img
+                  src={b.image}
+                  alt={b.name}
+                  style={{
+                    width: "100%",
+                    height: 180,
+                    objectFit: "cover",
+                    display: "block",
+                  }}
+                />
+                <figcaption style={{ 
+                  position: "absolute",
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  background: "linear-gradient(to top, rgba(0,0,0,0.9), transparent)",
+                  padding: "32px 12px 12px",
+                  fontWeight: 600,
+                  fontSize: 16
+                }}>
+                  {b.name}
+                </figcaption>
+              </figure>
+            ))}
           </div>
-          <ListBlock title="Интересные места" items={city.places} />
-        </div>
+        </section>
 
-        {/* Right */}
-        <aside>
-          {city.npcs?.length > 0 && (
-            <div>
-              <h4 style={{ margin: "0 0 8px" }}>Важные НПЦ</h4>
-              <div style={{ display: "grid", gap: 8 }}>
-                {city.npcs.map((n) => {
-                  const npcPath = n.id?.startsWith("npc-")
-                    ? `/characters/npcs/${n.id}`
-                    : null;
-                  const content = (
-                    <div
-                      style={{ display: "flex", gap: 8, alignItems: "center" }}
-                    >
-                      {n.portrait && (
-                        <img
-                          src={n.portrait}
-                          alt={n.name}
-                          style={{
-                            width: 44,
-                            height: 44,
-                            borderRadius: 8,
-                            objectFit: "cover",
-                          }}
-                        />
-                      )}
-                      <div>
-                        <div style={{ fontWeight: 700 }}>{n.name}</div>
-                        <div style={{ opacity: 0.85, fontSize: 13 }}>
-                          {n.role}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                  return npcPath ? (
-                    <Link
-                      key={n.id}
-                      to={npcPath}
-                      style={{
-                        textDecoration: "none",
-                        color: "inherit",
-                        display: "block",
-                      }}
-                    >
-                      {content}
-                    </Link>
-                  ) : (
-                    <div key={n.id}>{content}</div>
-                  );
-                })}
+        {/* Places */}
+        {city.places && city.places.length > 0 && (
+          <section style={{ marginBottom: 48 }}>
+            <h2 style={{ fontSize: 32, marginBottom: 16 }}>Интересные места</h2>
+            <p style={{ lineHeight: 1.7, marginBottom: 24, opacity: 0.9 }}>
+              Эти локации привлекают внимание путешественников и искателей приключений.
+            </p>
+            <ul style={{ listStyle: "none", padding: 0, display: "grid", gap: 12 }}>
+              {city.places.map((place, idx) => (
+                <li
+                  key={idx}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    background: "#0a0a0a",
+                    padding: 16,
+                    borderRadius: 8,
+                    border: "1px solid rgba(255,255,255,0.08)",
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: 99,
+                      background: "#d4af37",
+                      flexShrink: 0,
+                    }}
+                  />
+                  <span style={{ fontSize: 16 }}>{place}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {/* NPCs, Allies, Enemies */}
+        <section style={{ marginBottom: 48 }}>
+          <h2 style={{ fontSize: 32, marginBottom: 16 }}>Важные персоны</h2>
+          <p style={{ lineHeight: 1.7, marginBottom: 24, opacity: 0.9 }}>
+            Эти люди влияют на жизнь города и могут помочь или помешать вашим планам.
+          </p>
+
+          <div style={{ display: "grid", gap: 32 }}>
+            {/* NPCs */}
+            {city.npcs && city.npcs.length > 0 && (
+              <div>
+                <h3 style={{ fontSize: 24, marginBottom: 16, color: "#d4af37" }}>
+                  Важные НПС
+                </h3>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16 }}>
+                  {city.npcs.map((n) => (
+                    <CharacterCard key={n.id} character={n} type="npc" />
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {city.quests && (
-            <ListBlock title="Активные квесты" items={city.quests} />
-          )}
-          {city.news && <ListBlock title="Слухи и новости" items={city.news} />}
-        </aside>
-      </section>
+            {/* Allies */}
+            {cityAllies.length > 0 && (
+              <div>
+                <h3 style={{ fontSize: 24, marginBottom: 16, color: "#4da3ff" }}>
+                  Союзники
+                </h3>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16 }}>
+                  {cityAllies.map((ally) => (
+                    <CharacterCard key={ally.id} character={ally} type="ally" />
+                  ))}
+                </div>
+              </div>
+            )}
 
-      {/* Bottom big map */}
-      <section style={{ padding: 24 }}>
-        <img
-          src={city.bigMap}
-          alt="city map"
-          style={{
-            width: "100%",
-            borderRadius: 12,
-            border: "1px solid rgba(255,255,255,0.1)",
-          }}
-        />
-      </section>
+            {/* Enemies */}
+            {cityEnemies.length > 0 && (
+              <div>
+                <h3 style={{ fontSize: 24, marginBottom: 16, color: "#ff4d4d" }}>
+                  Противники
+                </h3>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16 }}>
+                  {cityEnemies.map((enemy) => (
+                    <CharacterCard key={enemy.id} character={enemy} type="enemy" />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Quests */}
+        {city.quests && city.quests.length > 0 && (
+          <section style={{ marginBottom: 48 }}>
+            <h2 style={{ fontSize: 32, marginBottom: 16 }}>Активные квесты</h2>
+            <p style={{ lineHeight: 1.7, marginBottom: 24, opacity: 0.9 }}>
+              Доступные задания, которые можно выполнять в этом городе.
+            </p>
+            <ul style={{ listStyle: "none", padding: 0, display: "grid", gap: 12 }}>
+              {city.quests.map((quest, idx) => (
+                <li
+                  key={idx}
+                  style={{
+                    background: "linear-gradient(135deg, rgba(77,163,255,0.1), rgba(77,163,255,0.05))",
+                    border: "1px solid rgba(77,163,255,0.3)",
+                    padding: 16,
+                    borderRadius: 8,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                  }}
+                >
+                  <span style={{ fontSize: 20 }}>⚔️</span>
+                  <span style={{ fontSize: 16 }}>{quest}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {/* News */}
+        {city.news && city.news.length > 0 && (
+          <section style={{ marginBottom: 48 }}>
+            <h2 style={{ fontSize: 32, marginBottom: 16 }}>Слухи и новости</h2>
+            <p style={{ lineHeight: 1.7, marginBottom: 24, opacity: 0.9 }}>
+              Последние события и разговоры на улицах города.
+            </p>
+            <ul style={{ listStyle: "none", padding: 0, display: "grid", gap: 12 }}>
+              {city.news.map((item, idx) => (
+                <li
+                  key={idx}
+                  style={{
+                    background: "#0a0a0a",
+                    padding: 16,
+                    borderRadius: 8,
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                  }}
+                >
+                  <span style={{ fontSize: 20 }}>📰</span>
+                  <span style={{ fontSize: 16, lineHeight: 1.6 }}>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+      </div>
     </main>
   );
 }
 
-function Block({ title, text }) {
+// Helper Components
+
+function InfoCard({ label, value }) {
+  return (
+    <div
+      style={{
+        background: "#0a0a0a",
+        border: "1px solid rgba(255,255,255,0.1)",
+        borderRadius: 12,
+        padding: 20,
+        textAlign: "center",
+      }}
+    >
+      <div style={{ fontSize: 14, opacity: 0.7, marginBottom: 8 }}>{label}</div>
+      <div style={{ fontSize: 22, fontWeight: 600, color: "#d4af37" }}>{value}</div>
+    </div>
+  );
+}
+
+function TextSection({ title, text }) {
   if (!text) return null;
   return (
-    <div style={{ marginTop: 16 }}>
-      <h3 style={{ margin: "0 0 8px" }}>{title}</h3>
-      <p style={{ margin: 0, lineHeight: 1.65 }}>{parseTextWithLinks(text)}</p>
+    <section style={{ marginBottom: 48 }}>
+      <h2 style={{ fontSize: 32, marginBottom: 16 }}>{title}</h2>
+      <div style={{ 
+        lineHeight: 1.8, 
+        fontSize: 17,
+        background: "#0a0a0a",
+        padding: 24,
+        borderRadius: 12,
+        border: "1px solid rgba(255,255,255,0.08)"
+      }}>
+        {parseTextWithLinks(text)}
+      </div>
+    </section>
+  );
+}
+
+function CharacterCard({ character, type }) {
+  const borderColors = {
+    npc: "rgba(212,175,55,0.3)",
+    ally: "rgba(77,163,255,0.3)",
+    enemy: "rgba(255,77,77,0.3)",
+  };
+
+  const bgColors = {
+    npc: "rgba(212,175,55,0.05)",
+    ally: "rgba(77,163,255,0.05)",
+    enemy: "rgba(255,77,77,0.05)",
+  };
+
+  const path = character.id?.startsWith("npc-")
+    ? `/characters/npcs/${character.id}`
+    : character.id?.startsWith("ally-")
+    ? `/characters/allies/${character.id}`
+    : character.id?.startsWith("enemy-")
+    ? `/characters/enemies/${character.id}`
+    : null;
+
+  const content = (
+    <div
+      style={{
+        background: `linear-gradient(135deg, ${bgColors[type]}, transparent)`,
+        border: `1px solid ${borderColors[type]}`,
+        borderRadius: 12,
+        padding: 16,
+        display: "flex",
+        gap: 16,
+        alignItems: "center",
+        transition: "transform 0.2s",
+        cursor: path ? "pointer" : "default",
+      }}
+      onMouseEnter={(e) => {
+        if (path) e.currentTarget.style.transform = "translateY(-2px)";
+      }}
+      onMouseLeave={(e) => {
+        if (path) e.currentTarget.style.transform = "translateY(0)";
+      }}
+    >
+      {character.portrait && (
+        <img
+          src={character.portrait}
+          alt={character.name}
+          style={{
+            width: 64,
+            height: 64,
+            borderRadius: 10,
+            objectFit: "cover",
+            border: `2px solid ${borderColors[type]}`,
+          }}
+        />
+      )}
+      <div>
+        <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 4 }}>
+          {character.name}
+        </div>
+        <div style={{ opacity: 0.85, fontSize: 14 }}>{character.role}</div>
+      </div>
     </div>
+  );
+
+  return path ? (
+    <Link to={path} style={{ textDecoration: "none", color: "inherit" }}>
+      {content}
+    </Link>
+  ) : (
+    content
   );
 }
 
 function parseTextWithLinks(text) {
   if (!text) return text;
 
-  // Парсим markdown-ссылки вида [текст](путь)
   const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
   const parts = [];
   let lastIndex = 0;
@@ -259,100 +514,33 @@ function parseTextWithLinks(text) {
   let keyCounter = 0;
 
   while ((match = linkRegex.exec(text)) !== null) {
-    // Добавляем текст до ссылки
     if (match.index > lastIndex) {
       parts.push(text.substring(lastIndex, match.index));
     }
 
-    // Добавляем ссылку
     const linkText = match[1];
     const linkPath = match[2];
     parts.push(
       <Link
         key={`link-${keyCounter++}`}
         to={linkPath}
-        style={{ color: "#4da3ff", textDecoration: "none", fontWeight: 500 }}
+        style={{ 
+          color: "#4da3ff", 
+          textDecoration: "none", 
+          fontWeight: 600,
+          borderBottom: "1px solid rgba(77,163,255,0.3)"
+        }}
       >
         {linkText}
-      </Link>,
+      </Link>
     );
 
     lastIndex = match.index + match[0].length;
   }
 
-  // Добавляем оставшийся текст
   if (lastIndex < text.length) {
     parts.push(text.substring(lastIndex));
   }
 
   return parts.length > 0 ? parts : text;
-}
-
-function ListBlock({ title, items }) {
-  if (!items || items.length === 0) return null;
-  return (
-    <div style={{ marginTop: 16 }}>
-      <h3 style={{ margin: "0 0 8px" }}>{title}</h3>
-      <ul
-        style={{
-          listStyle: "none",
-          padding: 0,
-          margin: 0,
-          display: "grid",
-          gap: 6,
-        }}
-      >
-        {items.map((it, idx) => (
-          <li
-            key={idx}
-            style={{ display: "flex", alignItems: "center", gap: 8 }}
-          >
-            <span
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: 99,
-                background: "#d4af37",
-                display: "inline-block",
-              }}
-            />
-            <span>{it}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function InfoRow({ label, value, avatar }) {
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 8,
-        padding: "6px 0",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
-      }}
-    >
-      <div style={{ width: 140, opacity: 0.75 }}>{label}</div>
-      {avatar ? (
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <img
-            src={avatar}
-            alt="avatar"
-            style={{
-              width: 24,
-              height: 24,
-              borderRadius: 4,
-              objectFit: "cover",
-            }}
-          />
-          <div>{value}</div>
-        </div>
-      ) : (
-        <div>{value}</div>
-      )}
-    </div>
-  );
 }

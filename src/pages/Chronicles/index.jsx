@@ -16,22 +16,22 @@ export default function ChroniclesIndex() {
           {
             label: "Сессии",
             to: "/chronicles/sessions",
-            img: "/images/chronicles/sessions/15_hero.jpg",
+            img: "/assets/images/chronicles/sessions/15_hero.jpg",
           },
           {
             label: "Ключевые события",
             to: "/chronicles/key-events",
-            img: "/images/chronicles/events/event_hero.jpg",
+            img: "/assets/images/chronicles/events/event_hero.jpg",
           },
           {
             label: "Временная шкала",
             to: "/chronicles/timeline",
-            img: "/images/chronicles/timeline/timeline_hero.jpg",
+            img: "/assets/images/chronicles/timeline/timeline_hero.jpg",
           },
           {
             label: "Цитаты",
             to: "/chronicles/quotes",
-            img: "/images/chronicles/quotes/quotes_hero.jpg",
+            img: "/assets/images/chronicles/quotes/quotes_hero.jpg",
           },
         ].map((x) => (
           <Link

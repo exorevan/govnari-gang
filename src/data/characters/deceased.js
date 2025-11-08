@@ -3,8 +3,8 @@ export const deceased = [
     id: "deceased-tolvi",
     name: "Тольви",
     role: "Полурослик-плут",
-    banner: "/images/chars/tolvi-banner.jpg",
-    symbol: "/images/icons/rogue-icon.png",
+    banner: "/assets/images/chars/tolvi-banner.jpg",
+    symbol: "/assets/images/icons/rogue-icon.png",
     quote: "",
     death:
       "После смерти Тольви несколько недель думали, что её просто никто не видит, но она рядом. В катке номер 7 узнали, что она всё-таки умерла.",

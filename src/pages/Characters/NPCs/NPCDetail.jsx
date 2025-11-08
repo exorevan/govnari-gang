@@ -75,7 +75,7 @@ export default function NPCDetail() {
           <ListBlock
             title="Достижения"
             items={npc.achievements}
-            icon="/images/icons/trophy-gold.png"
+            icon="/assets/images/icons/trophy-gold.png"
           />
           <ListBlock
             title="Важные моменты в кампании"

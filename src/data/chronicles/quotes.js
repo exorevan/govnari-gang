@@ -5,7 +5,7 @@ export const quotes = [
     character: {
       id: "pc-lyria",
       name: "Лирия",
-      portrait: "/images/chars/lyria_portrait.jpg",
+      portrait: "/assets/images/chars/lyria_portrait.jpg",
     },
     context: "Перед взломом зачарованной двери",
     reaction: "Смеялись",

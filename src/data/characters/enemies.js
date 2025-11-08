@@ -4,7 +4,7 @@ export const enemies = [
     name: "Тристан Уотерс",
     role: "Бывший глава стражи города Фонт",
     city: "Фонт",
-    portrait: "/images/chars/tristan_waters.jpg",
+    portrait: "/assets/images/chars/tristan_waters.jpg",
   },
 ];
 
