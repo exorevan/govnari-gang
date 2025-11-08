@@ -1,12 +1,12 @@
 import React from "react";
 import { useParams, Link } from "react-router-dom";
-import { npcs } from "../../../data/characters/npcs";
+import { allies } from "../../../data/characters/allies";
 import { cities } from "../../../data/world/cities";
 import { fractions } from "../../../data/lore/fractions";
 
-export default function NPCDetail() {
+export default function AllyDetail() {
   const { id } = useParams();
-  const npc = npcs.find((n) => n.id === id) || npcs[0];
+  const ally = allies.find((n) => n.id === id) || allies[0];
 
   return (
     <main style={{ minHeight: "100%" }}>
@@ -14,7 +14,7 @@ export default function NPCDetail() {
         style={{
           position: "relative",
           height: "50vh",
-          background: `url(${npc.banner}) center/cover no-repeat`,
+          background: `url(${ally.banner}) center/cover no-repeat`,
         }}
       >
         <div
@@ -44,15 +44,15 @@ export default function NPCDetail() {
           >
             <div>
               <h1 style={{ fontSize: 40, margin: 0, color: "#d4af37" }}>
-                {npc.name}
+                {ally.name}
               </h1>
-              <div style={{ opacity: 0.9, marginTop: 6 }}>{npc.role}</div>
+              <div style={{ opacity: 0.9, marginTop: 6 }}>{ally.role}</div>
               <em style={{ display: "block", marginTop: 12, opacity: 0.9 }}>
-                “{npc.quote}”
+                “{ally.quote}”
               </em>
             </div>
             <img
-              src={npc.symbol}
+              src={ally.symbol}
               alt="symbol"
               style={{ width: 80, height: 80, objectFit: "contain" }}
             />
@@ -69,19 +69,19 @@ export default function NPCDetail() {
         }}
       >
         <div>
-          <Block title="Внешность" text={npc.appearance} />
-          <Block title="Биография" text={npc.biography} />
-          <Block title="Личность и мотивация" text={npc.personality} />
+          <Block title="Внешность" text={ally.appearance} />
+          <Block title="Биография" text={ally.biography} />
+          <Block title="Личность и мотивация" text={ally.personality} />
           <ListBlock
             title="Достижения"
-            items={npc.achievements}
+            items={ally.achievements}
             icon="/images/icons/trophy-gold.png"
           />
           <ListBlock
             title="Важные моменты в кампании"
-            items={npc.campaignMoments}
+            items={ally.campaignMoments}
           />
-          {npc.gallery?.length ? (
+          {ally.gallery?.length ? (
             <div style={{ marginTop: 24 }}>
               <h3 style={{ margin: "0 0 12px" }}>Галерея</h3>
               <div
@@ -91,7 +91,7 @@ export default function NPCDetail() {
                   gap: 8,
                 }}
               >
-                {npc.gallery.map((src) => (
+                {ally.gallery.map((src) => (
                   <img
                     key={src}
                     src={src}
@@ -117,7 +117,7 @@ export default function NPCDetail() {
               gap: 8,
             }}
           >
-            {Object.entries(npc.stats).map(([key, value]) => (
+            {Object.entries(ally.stats).map(([key, value]) => (
               <div
                 key={key}
                 style={{
@@ -147,7 +147,7 @@ export default function NPCDetail() {
                 gap: 6,
               }}
             >
-              {npc.equipment.map((it) => (
+              {ally.equipment.map((it) => (
                 <li
                   key={it.name}
                   style={{ display: "flex", alignItems: "center", gap: 8 }}
@@ -163,11 +163,11 @@ export default function NPCDetail() {
             </ul>
           </div>
 
-          {npc.relations?.length > 0 && (
+          {ally.relations?.length > 0 && (
             <div style={{ marginTop: 16 }}>
               <h4 style={{ margin: "0 0 8px" }}>Связи</h4>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                {npc.relations.map((r) => {
+                {ally.relations.map((r) => {
                   const relationPath = getCharacterPath(r.id);
                   const content = (
                     <figure style={{ margin: 0, textAlign: "center" }}>
@@ -202,11 +202,11 @@ export default function NPCDetail() {
             </div>
           )}
 
-          {npc.city && (
+          {ally.city && (
             <div style={{ marginTop: 16 }}>
               <h4 style={{ margin: "0 0 8px" }}>Город</h4>
               {(() => {
-                const city = cities.find((c) => c.name === npc.city);
+                const city = cities.find((c) => c.name === ally.city);
                 return city ? (
                   <Link
                     to={`/world/cities/${city.id}`}
@@ -216,20 +216,20 @@ export default function NPCDetail() {
                       textDecoration: "none",
                     }}
                   >
-                    {npc.city}
+                    {ally.city}
                   </Link>
                 ) : (
-                  <span>{npc.city}</span>
+                  <span>{ally.city}</span>
                 );
               })()}
             </div>
           )}
 
-          {npc.fractions?.length > 0 && (
+          {ally.fractions?.length > 0 && (
             <div style={{ marginTop: 16 }}>
               <h4 style={{ margin: "0 0 8px" }}>Фракции</h4>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                {npc.fractions.map((f) => {
+                {ally.fractions.map((f) => {
                   const fraction = fractions.find((fr) => fr.id === f.id);
                   const content = (
                     <div

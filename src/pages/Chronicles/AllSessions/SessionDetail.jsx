@@ -8,6 +8,14 @@ import { cities } from "../../../data/world/cities";
 import { fractions } from "../../../data/lore/fractions";
 import { gods } from "../../../data/lore/gods";
 
+function findCharacter(id) {
+  return (
+    playerCharacters.find((c) => c.id === id) ||
+    npcs.find((c) => c.id === id) ||
+    allies.find((c) => c.id === id)
+  );
+}
+
 export default function SessionDetail() {
   const { id } = useParams();
   const idx = sessions.findIndex((s) => s.id === id);
@@ -62,45 +70,71 @@ export default function SessionDetail() {
       >
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <Block title="Краткое содержание" text={s.summary} />
+
           {s.participants?.length > 0 && (
             <div style={{ marginTop: 16 }}>
               <div style={{ fontWeight: 700, marginBottom: 8 }}>Участники</div>
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-                {s.participants.map((p) => {
-                  const participantPath = getCharacterPath(p.id);
+                {s.participants.map((participantId) => {
+                  const character = findCharacter(participantId);
+                  if (!character) return null;
+
+                  const participantPath = getCharacterPath(participantId);
                   const content = (
                     <figure style={{ margin: 0, textAlign: "center" }}>
-                      {p.portrait && (
-                        <img
-                          src={p.portrait}
-                          alt={p.name}
-                          style={{
-                            width: 72,
-                            height: 72,
-                            objectFit: "cover",
-                            borderRadius: 12,
-                          }}
-                        />
-                      )}
-                      <figcaption style={{ marginTop: 6 }}>{p.name}</figcaption>
+                      <img
+                        src={
+                          character.banner ||
+                          character.portrait ||
+                          "/assets/images/placeholder.jpg"
+                        }
+                        alt={character.name}
+                        style={{
+                          width: 72,
+                          height: 72,
+                          objectFit: "cover",
+                          borderRadius: 12,
+                        }}
+                      />
+                      <figcaption style={{ marginTop: 6 }}>
+                        {character.name}
+                      </figcaption>
                     </figure>
                   );
+
                   return participantPath ? (
                     <Link
-                      key={p.id}
+                      key={participantId}
                       to={participantPath}
                       style={{ textDecoration: "none", color: "inherit" }}
                     >
                       {content}
                     </Link>
                   ) : (
-                    <div key={p.id}>{content}</div>
+                    <div key={participantId}>{content}</div>
                   );
                 })}
               </div>
             </div>
           )}
-          <Block title="Подробное описание" text={s.details} />
+
+          {/* Главы */}
+          {s.chapters?.length > 0 && (
+            <div style={{ marginTop: 24 }}>
+              <h2 style={{ margin: "0 0 16px", fontSize: "1.5rem" }}>
+                История приключения
+              </h2>
+              {s.chapters.map((chapter, idx) => (
+                <ChapterBlock
+                  key={idx}
+                  number={idx + 1}
+                  title={chapter.title}
+                  text={chapter.content}
+                />
+              ))}
+            </div>
+          )}
+
           <ListBlock title="Ключевые моменты" items={s.keyMoments} />
           <ListBlock title="Решения игроков" items={s.decisions} />
           <ListBlock title="Последствия" items={s.consequences} />
@@ -108,7 +142,7 @@ export default function SessionDetail() {
 
         <aside>
           <InfoCard title="MVP сессии" value={s.mvp} />
-          <InfoCard title="Лучшая цитата" value={`“${s.bestQuote}”`} />
+          <InfoCard title="Лучшая цитата" value={`"${s.bestQuote}"`} />
           <ListBlock title="Полученный опыт и лут" items={s.rewards} />
         </aside>
       </section>
@@ -167,6 +201,49 @@ function Block({ title, text }) {
   );
 }
 
+function ChapterBlock({ number, title, text }) {
+  if (!text) return null;
+  return (
+    <div
+      style={{
+        marginTop: 20,
+        padding: 16,
+        background: "rgba(255,255,255,0.03)",
+        borderRadius: 12,
+        border: "1px solid rgba(255,255,255,0.08)",
+      }}
+    >
+      <h3
+        style={{
+          margin: "0 0 12px",
+          color: "#d4af37",
+          fontSize: "1.1rem",
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+        }}
+      >
+        <span
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 28,
+            height: 28,
+            borderRadius: "50%",
+            background: "rgba(212, 175, 55, 0.2)",
+            fontSize: "0.9rem",
+          }}
+        >
+          {number}
+        </span>
+        {title}
+      </h3>
+      <p style={{ margin: 0, lineHeight: 1.7 }}>{parseTextWithLinks(text)}</p>
+    </div>
+  );
+}
+
 function parseTextWithLinks(text) {
   if (!text) return text;
 
@@ -193,7 +270,7 @@ function parseTextWithLinks(text) {
         style={{ color: "#4da3ff", textDecoration: "none", fontWeight: 500 }}
       >
         {linkText}
-      </Link>,
+      </Link>
     );
 
     lastIndex = match.index + match[0].length;
