@@ -187,7 +187,9 @@ export default function CityDetail() {
                       )}
                       <div>
                         <div style={{ fontWeight: 700 }}>{n.name}</div>
-                        <div style={{ opacity: 0.85, fontSize: 13 }}>{n.role}</div>
+                        <div style={{ opacity: 0.85, fontSize: 13 }}>
+                          {n.role}
+                        </div>
                       </div>
                     </div>
                   );
@@ -211,7 +213,9 @@ export default function CityDetail() {
             </div>
           )}
 
-          {city.quests && <ListBlock title="Активные квесты" items={city.quests} />}
+          {city.quests && (
+            <ListBlock title="Активные квесты" items={city.quests} />
+          )}
           {city.news && <ListBlock title="Слухи и новости" items={city.news} />}
         </aside>
       </section>
@@ -237,9 +241,7 @@ function Block({ title, text }) {
   return (
     <div style={{ marginTop: 16 }}>
       <h3 style={{ margin: "0 0 8px" }}>{title}</h3>
-      <p style={{ margin: 0, lineHeight: 1.65 }}>
-        {parseTextWithLinks(text)}
-      </p>
+      <p style={{ margin: 0, lineHeight: 1.65 }}>{parseTextWithLinks(text)}</p>
     </div>
   );
 }
@@ -270,7 +272,7 @@ function parseTextWithLinks(text) {
         style={{ color: "#4da3ff", textDecoration: "none", fontWeight: 500 }}
       >
         {linkText}
-      </Link>
+      </Link>,
     );
 
     lastIndex = match.index + match[0].length;

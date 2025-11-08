@@ -13,7 +13,13 @@ export default function GodDetail() {
 
   if (!god) {
     return (
-      <main style={{ padding: 24 }}>
+      <main
+        style={{
+          padding: 24,
+          maxWidth: 1200,
+          margin: "0 auto",
+        }}
+      >
         <h2 style={{ marginBottom: 12 }}>Бог не найден</h2>
         <Link to="/lore/gods" style={{ color: "#4da3ff" }}>
           Назад к богам
@@ -25,49 +31,66 @@ export default function GodDetail() {
   // Найти персонажей, поклоняющихся этому богу
   const worshippers = [
     ...playerCharacters.filter((pc) =>
-      pc.biography?.toLowerCase().includes(god.name.toLowerCase())
+      pc.biography?.toLowerCase().includes(god.name.toLowerCase()),
     ),
     ...npcs.filter((npc) =>
-      npc.biography?.toLowerCase().includes(god.name.toLowerCase())
+      npc.biography?.toLowerCase().includes(god.name.toLowerCase()),
     ),
   ];
 
   return (
     <main style={{ padding: 24 }}>
-      <div style={{ marginBottom: 24 }}>
-        <Link to="/lore/gods" style={{ color: "#4da3ff", textDecoration: "none" }}>
+      <div style={{ marginBottom: 24, marginLeft: -40 }}>
+        <Link
+          to="/lore/gods"
+          style={{ color: "#4da3ff", textDecoration: "none" }}
+        >
           ← Назад к богам
         </Link>
       </div>
-      <h1 style={{ marginBottom: 12 }}>{god.name}</h1>
+      <h1 style={{ marginBottom: 10, marginLeft: 5 }}>{god.name}</h1>
       {god.domain && (
-        <div style={{ opacity: 0.8, marginBottom: 16 }}>{god.domain}</div>
-      )}
-      {god.banner && (
-        <img
-          src={god.banner}
-          alt={god.name}
-          style={{
-            width: "100%",
-            maxHeight: 400,
-            objectFit: "cover",
-            borderRadius: 12,
-            marginBottom: 24,
-          }}
-        />
+        <div style={{ opacity: 0.8, marginBottom: 16, marginLeft: 15 }}>
+          {god.domain}
+        </div>
       )}
       {god.description && (
-        <div style={{ maxWidth: 800, lineHeight: 1.7, marginBottom: 24 }}>
+        <div style={{ lineHeight: 1.7, marginBottom: 24 }}>
+          {god.banner && (
+            <img
+              src={god.banner}
+              alt={god.name}
+              style={{
+                float: "right",
+                width: "300px",
+                maxWidth: "40%",
+                minHeight: "300px",
+                height: "auto",
+                objectFit: "cover",
+                borderRadius: 12,
+                marginLeft: 24,
+                marginBottom: 16,
+              }}
+            />
+          )}
           {god.description.split("\n").map((para, idx) => (
-            <p key={idx} style={{ margin: idx > 0 ? "16px 0 0" : 0 }}>
+            <p
+              key={idx}
+              style={{
+                margin: idx > 0 ? "16px 0 0" : 0,
+                textIndent: "2em",
+                textAlign: "justify",
+              }}
+            >
               {parseTextWithLinks(para.trim())}
             </p>
           ))}
         </div>
       )}
+
       {worshippers.length > 0 && (
         <div style={{ marginTop: 32 }}>
-          <h3 style={{ marginBottom: 16 }}>Поклонники</h3>
+          <h3 style={{ marginBottom: 16, marginLeft: 5 }}>Поклонники</h3>
           <div
             style={{
               display: "grid",
@@ -133,7 +156,7 @@ function parseTextWithLinks(text) {
         style={{ color: "#4da3ff", textDecoration: "none", fontWeight: 500 }}
       >
         {linkText}
-      </Link>
+      </Link>,
     );
 
     lastIndex = match.index + match[0].length;

@@ -33,7 +33,9 @@ export default function FractionsPage() {
           >
             <div style={{ fontWeight: 700, fontSize: 18 }}>{fraction.name}</div>
             {fraction.description ? (
-              <div style={{ opacity: 0.8, fontSize: 14 }}>{fraction.description}</div>
+              <div style={{ opacity: 0.8, fontSize: 14 }}>
+                {fraction.description}
+              </div>
             ) : null}
           </Link>
         ))}

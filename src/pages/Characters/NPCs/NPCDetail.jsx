@@ -282,9 +282,7 @@ function Block({ title, text }) {
   return (
     <div style={{ marginTop: 16 }}>
       <h3 style={{ margin: "0 0 8px" }}>{title}</h3>
-      <p style={{ margin: 0, lineHeight: 1.65 }}>
-        {parseTextWithLinks(text)}
-      </p>
+      <p style={{ margin: 0, lineHeight: 1.65 }}>{parseTextWithLinks(text)}</p>
     </div>
   );
 }
@@ -315,7 +313,7 @@ function parseTextWithLinks(text) {
         style={{ color: "#4da3ff", textDecoration: "none", fontWeight: 500 }}
       >
         {linkText}
-      </Link>
+      </Link>,
     );
 
     lastIndex = match.index + match[0].length;

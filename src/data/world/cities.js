@@ -25,15 +25,15 @@ export const cities = [
         image: "/images/world/cities/font_townhall.jpg",
       },
       {
-        name: "Таверна \"Гоблинский Пунш\"",
+        name: 'Таверна "Гоблинский Пунш"',
         image: "/images/world/cities/font_tavern_goblin_punch.jpg",
       },
       {
-        name: "Таверна \"Сырный маг\"",
+        name: 'Таверна "Сырный маг"',
         image: "/images/world/cities/font_tavern_cheese_mage.jpg",
       },
       {
-        name: "Таверна \"Три топора\"",
+        name: 'Таверна "Три топора"',
         image: "/images/world/cities/font_tavern_three_axes.jpg",
       },
       {

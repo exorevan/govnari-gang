@@ -78,6 +78,7 @@ export default function PlayerCharacterDetail() {
         <div>
           <Block title="Внешность" text={pc.appearance} />
           <Block title="Биография" text={pc.biography} />
+
           <Block title="Личность и мотивация" text={pc.personality} />
           <ListBlock
             title="Достижения"
@@ -286,9 +287,20 @@ function Block({ title, text }) {
   return (
     <div style={{ marginTop: 16 }}>
       <h3 style={{ margin: "0 0 8px" }}>{title}</h3>
-      <p style={{ margin: 0, lineHeight: 1.65 }}>
-        {parseTextWithLinks(text)}
-      </p>
+      <div style={{ lineHeight: 1.65 }}>
+        {text.split("\n").map((para, idx) => (
+          <p
+            key={idx}
+            style={{
+              margin: idx > 0 ? "16px 0 0" : 0,
+              textIndent: "2em",
+              textAlign: "justify",
+            }}
+          >
+            {parseTextWithLinks(para.trim())}
+          </p>
+        ))}
+      </div>
     </div>
   );
 }

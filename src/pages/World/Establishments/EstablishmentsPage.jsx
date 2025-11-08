@@ -46,16 +46,25 @@ export default function EstablishmentsPage() {
                   }}
                 >
                   <div>
-                    <div style={{ fontWeight: 700, fontSize: 18 }}>{est.name}</div>
-                    <div style={{ fontSize: 13, opacity: 0.85 }}>{est.settlement}</div>
-                    <div style={{ fontSize: 13, opacity: 0.7 }}>{est.location}</div>
+                    <div style={{ fontWeight: 700, fontSize: 18 }}>
+                      {est.name}
+                    </div>
+                    <div style={{ fontSize: 13, opacity: 0.85 }}>
+                      {est.settlement}
+                    </div>
+                    <div style={{ fontSize: 13, opacity: 0.7 }}>
+                      {est.location}
+                    </div>
                   </div>
 
-                  <p style={{ margin: 0, lineHeight: 1.5 }}>{est.description}</p>
+                  <p style={{ margin: 0, lineHeight: 1.5 }}>
+                    {est.description}
+                  </p>
 
                   {est.owner ? (
                     <div style={{ fontSize: 13, opacity: 0.85 }}>
-                      <span style={{ opacity: 0.7 }}>Хозяин:</span> {est.owner.name}
+                      <span style={{ opacity: 0.7 }}>Хозяин:</span>{" "}
+                      {est.owner.name}
                       {est.owner.title ? `, ${est.owner.title}` : ""}
                     </div>
                   ) : null}
@@ -69,11 +78,20 @@ export default function EstablishmentsPage() {
                   ) : null}
 
                   {est.notableClients?.length ? (
-                    <DetailList title="Постоянные гости" items={est.notableClients} />
+                    <DetailList
+                      title="Постоянные гости"
+                      items={est.notableClients}
+                    />
                   ) : null}
 
                   {est.rumor ? (
-                    <div style={{ fontSize: 13, opacity: 0.75, fontStyle: "italic" }}>
+                    <div
+                      style={{
+                        fontSize: 13,
+                        opacity: 0.75,
+                        fontStyle: "italic",
+                      }}
+                    >
                       {est.rumor}
                     </div>
                   ) : null}
@@ -175,4 +193,3 @@ function DetailList({ title, items }) {
     </div>
   );
 }
-

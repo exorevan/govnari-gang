@@ -24,9 +24,7 @@ export default function FractionDetail() {
 
   // Найти всех персонажей, связанных с этой фракцией
   const members = [
-    ...playerCharacters.filter((pc) =>
-      pc.fractions?.some((f) => f.id === id)
-    ),
+    ...playerCharacters.filter((pc) => pc.fractions?.some((f) => f.id === id)),
     ...npcs.filter((npc) => npc.fractions?.some((f) => f.id === id)),
     ...allies.filter((ally) => ally.fractions?.some((f) => f.id === id)),
   ];
@@ -34,7 +32,10 @@ export default function FractionDetail() {
   return (
     <main style={{ padding: 24 }}>
       <div style={{ marginBottom: 24 }}>
-        <Link to="/lore/fractions" style={{ color: "#4da3ff", textDecoration: "none" }}>
+        <Link
+          to="/lore/fractions"
+          style={{ color: "#4da3ff", textDecoration: "none" }}
+        >
           ← Назад ко всем фракциям
         </Link>
       </div>
@@ -144,7 +145,7 @@ function parseTextWithLinks(text) {
         style={{ color: "#4da3ff", textDecoration: "none", fontWeight: 500 }}
       >
         {linkText}
-      </Link>
+      </Link>,
     );
 
     lastIndex = match.index + match[0].length;
