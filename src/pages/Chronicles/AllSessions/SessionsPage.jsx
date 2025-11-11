@@ -1,8 +1,45 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { sessions } from "../../../data/chronicles/sessions";
 
 export default function SessionsPage() {
+  const [sessions, setSessions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function loadSessions() {
+      try {
+        setLoading(true);
+        const response = await fetch("/data/chronicles/sessions/index.json");
+        if (!response.ok) throw new Error("Failed to load sessions");
+        const data = await response.json();
+        setSessions(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadSessions();
+  }, []);
+
+  if (loading) {
+    return (
+      <main style={{ padding: 24, textAlign: "center" }}>
+        <div>Загрузка сессий...</div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main style={{ padding: 24 }}>
+        <h2>Ошибка загрузки</h2>
+        <p>{error}</p>
+      </main>
+    );
+  }
+
   return (
     <main style={{ padding: 24, display: "grid", gap: 16 }}>
       <h2>Сессии</h2>

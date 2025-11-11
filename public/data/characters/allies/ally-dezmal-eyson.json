@@ -1,0 +1,14 @@
+{
+  "id": "ally-dezmal-eyson",
+  "name": "Дезмал Эйсон",
+  "role": "Союзник",
+  "city": "Фонт",
+  "portrait": "/assets/images/chars/dezmal_eyson.jpg",
+  "fractions": [
+    {
+      "id": "f-eyson-family",
+      "name": "Род Эйсонов",
+      "icon": "/assets/images/icons/fraction-eyson-manticore.png"
+    }
+  ]
+}

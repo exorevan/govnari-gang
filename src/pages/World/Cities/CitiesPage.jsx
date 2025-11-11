@@ -1,8 +1,68 @@
-import React from "react";
+// src/pages/World/Cities/CitiesPage.jsx
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { cities } from "../../../data/world/cities";
 
 export default function CitiesPage() {
+  const [cities, setCities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function loadCities() {
+      try {
+        setLoading(true);
+
+        // Загружаем список ID городов
+        const indexResponse = await fetch("/data/world/cities/index.json");
+        if (!indexResponse.ok) {
+          throw new Error("Не удалось загрузить список городов");
+        }
+        const cityIds = await indexResponse.json();
+
+        // Загружаем данные каждого города
+        const citiesData = await Promise.all(
+          cityIds.map(async (id) => {
+            const response = await fetch(`/data/world/cities/${id}.json`);
+            if (!response.ok) {
+              throw new Error(`Не удалось загрузить город ${id}`);
+            }
+            return response.json();
+          }),
+        );
+
+        setCities(citiesData);
+      } catch (err) {
+        setError(err.message);
+        console.error("Ошибка загрузки городов:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadCities();
+  }, []);
+
+  if (loading) {
+    return (
+      <main style={{ padding: 24, textAlign: "center" }}>
+        <div style={{ fontSize: 18 }}>Загрузка городов...</div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main style={{ padding: 24 }}>
+        <div style={{ color: "#ff4d4d", marginBottom: 16 }}>
+          Ошибка: {error}
+        </div>
+        <Link to="/world" style={{ color: "#4da3ff", textDecoration: "none" }}>
+          ← Назад к разделу "Мир"
+        </Link>
+      </main>
+    );
+  }
+
   return (
     <main style={{ padding: 24 }}>
       <h2 style={{ marginBottom: 16 }}>Города</h2>

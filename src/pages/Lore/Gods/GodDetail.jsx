@@ -1,25 +1,93 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { gods } from "../../../data/lore/gods";
-import { playerCharacters } from "../../../data/characters/playerCharacters";
-import { npcs } from "../../../data/characters/npcs";
-import { allies } from "../../../data/characters/allies";
-import { cities } from "../../../data/world/cities";
-import { fractions } from "../../../data/lore/fractions";
 
 export default function GodDetail() {
   const { id } = useParams();
-  const god = gods.find((g) => g.id === id);
+  const [god, setGod] = useState(null);
+  const [worshippers, setWorshippers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        setLoading(true);
+
+        // Загружаем данные бога
+        const godsResponse = await fetch("/data/lore/gods.json");
+        if (!godsResponse.ok) {
+          throw new Error("Не удалось загрузить данные богов");
+        }
+        const godsData = await godsResponse.json();
+        const currentGod = godsData.find((g) => g.id === id);
+
+        if (!currentGod) {
+          throw new Error("Бог не найден");
+        }
+
+        setGod(currentGod);
+
+        // Загружаем данные персонажей для поиска поклонников
+        const [pcResponse, npcResponse] = await Promise.all([
+          fetch("/data/characters/playerCharacters.json"),
+          fetch("/data/characters/npcs.json"),
+        ]);
+
+        const [playerCharacters, npcs] = await Promise.all([
+          pcResponse.json(),
+          npcResponse.json(),
+        ]);
+
+        // Находим персонажей, поклоняющихся этому богу
+        const allWorshippers = [
+          ...playerCharacters.filter((pc) =>
+            pc.biography?.toLowerCase().includes(currentGod.name.toLowerCase()),
+          ),
+          ...npcs.filter((npc) =>
+            npc.biography
+              ?.toLowerCase()
+              .includes(currentGod.name.toLowerCase()),
+          ),
+        ];
+
+        setWorshippers(allWorshippers);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadData();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <main style={{ padding: 24, textAlign: "center" }}>
+        <div>Загрузка данных бога...</div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main style={{ padding: 24 }}>
+        <div style={{ color: "#ff4d4d", marginBottom: 16 }}>
+          Ошибка: {error}
+        </div>
+        <Link
+          to="/lore/gods"
+          style={{ color: "#4da3ff", textDecoration: "none" }}
+        >
+          ← Назад к богам
+        </Link>
+      </main>
+    );
+  }
 
   if (!god) {
     return (
-      <main
-        style={{
-          padding: 24,
-          maxWidth: 1200,
-          margin: "0 auto",
-        }}
-      >
+      <main style={{ padding: 24 }}>
         <h2 style={{ marginBottom: 12 }}>Бог не найден</h2>
         <Link to="/lore/gods" style={{ color: "#4da3ff" }}>
           Назад к богам
@@ -27,16 +95,6 @@ export default function GodDetail() {
       </main>
     );
   }
-
-  // Найти персонажей, поклоняющихся этому богу
-  const worshippers = [
-    ...playerCharacters.filter((pc) =>
-      pc.biography?.toLowerCase().includes(god.name.toLowerCase()),
-    ),
-    ...npcs.filter((npc) =>
-      npc.biography?.toLowerCase().includes(god.name.toLowerCase()),
-    ),
-  ];
 
   return (
     <main style={{ padding: 24 }}>
@@ -133,7 +191,6 @@ export default function GodDetail() {
 function parseTextWithLinks(text) {
   if (!text) return text;
 
-  // Парсим markdown-ссылки вида [текст](путь)
   const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
   const parts = [];
   let lastIndex = 0;
@@ -141,12 +198,10 @@ function parseTextWithLinks(text) {
   let keyCounter = 0;
 
   while ((match = linkRegex.exec(text)) !== null) {
-    // Добавляем текст до ссылки
     if (match.index > lastIndex) {
       parts.push(text.substring(lastIndex, match.index));
     }
 
-    // Добавляем ссылку
     const linkText = match[1];
     const linkPath = match[2];
     parts.push(
@@ -162,7 +217,6 @@ function parseTextWithLinks(text) {
     lastIndex = match.index + match[0].length;
   }
 
-  // Добавляем оставшийся текст
   if (lastIndex < text.length) {
     parts.push(text.substring(lastIndex));
   }

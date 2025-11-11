@@ -9,6 +9,7 @@ export const npcs = [
   {
     id: "npc-darion-eyson",
     name: "Дарион Эйсон",
+    symbol: "/assets/images/icons/fraction-eyson-manticore.png",
     role: "Мэр города Фонт",
     city: "Фонт",
     fractions: [

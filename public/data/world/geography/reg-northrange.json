@@ -1,0 +1,16 @@
+{
+  "id": "reg-northrange",
+  "name": "Северный Хребет",
+  "type": "горная гряда",
+  "panorama": "/assets/images/world/regions/northrange_panorama.jpg",
+  "bigMap": "/assets/images/world/regions/northrange_map.jpg",
+  "climate": "Суровый, ветреный, много снегов зимой. Летом — короткое тепло.",
+  "floraFauna": "Ели, карликовые берёзы, горные козлы, снежные барсы.",
+  "dangers": "Лавины, трещины в снегу, гнёзда грифонов.",
+  "locations": ["Перевал Орла", "Пещеры Эха"],
+  "peoples": "Горцы-рунники, монахи-хранители перевалов.",
+  "thumbs": [
+    "/assets/images/world/regions/northrange_1.jpg",
+    "/assets/images/world/regions/northrange_2.jpg"
+  ]
+}

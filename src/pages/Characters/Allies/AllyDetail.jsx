@@ -1,12 +1,15 @@
 import React from "react";
 import { useParams, Link } from "react-router-dom";
-import { allies } from "../../../data/characters/allies";
-import { cities } from "../../../data/world/cities";
-import { fractions } from "../../../data/lore/fractions";
+import { useData } from "../../../hooks/useData";
+import { getCharacterPath } from "../../../utils/getCharacterPath";
 
 export default function AllyDetail() {
   const { id } = useParams();
-  const ally = allies.find((n) => n.id === id) || allies[0];
+  const { data: ally, loading, error } = useData("characters", "allies", id);
+
+  if (loading) return <div style={{ padding: 24 }}>Загрузка...</div>;
+  if (error) return <div style={{ padding: 24 }}>Ошибка: {error.message}</div>;
+  if (!ally) return <div style={{ padding: 24 }}>Союзник не найден</div>;
 
   return (
     <main style={{ minHeight: "100%" }}>
@@ -14,7 +17,7 @@ export default function AllyDetail() {
         style={{
           position: "relative",
           height: "50vh",
-          background: `url(${ally.banner}) center/cover no-repeat`,
+          background: `url(${ally.banner || ally.portrait}) center/cover no-repeat`,
         }}
       >
         <div
@@ -47,15 +50,19 @@ export default function AllyDetail() {
                 {ally.name}
               </h1>
               <div style={{ opacity: 0.9, marginTop: 6 }}>{ally.role}</div>
-              <em style={{ display: "block", marginTop: 12, opacity: 0.9 }}>
-                “{ally.quote}”
-              </em>
+              {ally.quote && (
+                <em style={{ display: "block", marginTop: 12, opacity: 0.9 }}>
+                  "{ally.quote}"
+                </em>
+              )}
             </div>
-            <img
-              src={ally.symbol}
-              alt="symbol"
-              style={{ width: 80, height: 80, objectFit: "contain" }}
-            />
+            {ally.symbol && (
+              <img
+                src={ally.symbol}
+                alt="symbol"
+                style={{ width: 80, height: 80, objectFit: "contain" }}
+              />
+            )}
           </div>
         </div>
       </section>
@@ -69,19 +76,27 @@ export default function AllyDetail() {
         }}
       >
         <div>
-          <Block title="Внешность" text={ally.appearance} />
-          <Block title="Биография" text={ally.biography} />
-          <Block title="Личность и мотивация" text={ally.personality} />
-          <ListBlock
-            title="Достижения"
-            items={ally.achievements}
-            icon="/assets/images/icons/trophy-gold.png"
-          />
-          <ListBlock
-            title="Важные моменты в кампании"
-            items={ally.campaignMoments}
-          />
-          {ally.gallery?.length ? (
+          {ally.appearance && (
+            <Block title="Внешность" text={ally.appearance} />
+          )}
+          {ally.biography && <Block title="Биография" text={ally.biography} />}
+          {ally.personality && (
+            <Block title="Личность и мотивация" text={ally.personality} />
+          )}
+          {ally.achievements?.length > 0 && (
+            <ListBlock
+              title="Достижения"
+              items={ally.achievements}
+              icon="/assets/images/icons/trophy-gold.png"
+            />
+          )}
+          {ally.campaignMoments?.length > 0 && (
+            <ListBlock
+              title="Важные моменты в кампании"
+              items={ally.campaignMoments}
+            />
+          )}
+          {ally.gallery?.length > 0 && (
             <div style={{ marginTop: 24 }}>
               <h3 style={{ margin: "0 0 12px" }}>Галерея</h3>
               <div
@@ -106,70 +121,77 @@ export default function AllyDetail() {
                 ))}
               </div>
             </div>
-          ) : null}
+          )}
         </div>
 
         <aside>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: 8,
-            }}
-          >
-            {Object.entries(ally.stats).map(([key, value]) => (
-              <div
-                key={key}
-                style={{
-                  background: "#111",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  borderRadius: 8,
-                  padding: 8,
-                  textAlign: "center",
-                }}
-              >
-                <div style={{ fontSize: 12, opacity: 0.8 }}>
-                  {key.toUpperCase()}
-                </div>
-                <div style={{ fontSize: 18, fontWeight: 700 }}>{value}</div>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ marginTop: 16 }}>
-            <h4 style={{ margin: "0 0 8px" }}>Снаряжение</h4>
-            <ul
+          {ally.stats && Object.keys(ally.stats).length > 0 && (
+            <div
               style={{
-                listStyle: "none",
-                padding: 0,
-                margin: 0,
                 display: "grid",
-                gap: 6,
+                gridTemplateColumns: "repeat(3, 1fr)",
+                gap: 8,
               }}
             >
-              {ally.equipment.map((it) => (
-                <li
-                  key={it.name}
-                  style={{ display: "flex", alignItems: "center", gap: 8 }}
+              {Object.entries(ally.stats).map(([key, value]) => (
+                <div
+                  key={key}
+                  style={{
+                    background: "#111",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    borderRadius: 8,
+                    padding: 8,
+                    textAlign: "center",
+                  }}
                 >
-                  <img
-                    src={it.icon}
-                    alt="icon"
-                    style={{ width: 18, height: 18 }}
-                  />
-                  <span>{it.name}</span>
-                </li>
+                  <div style={{ fontSize: 12, opacity: 0.8 }}>
+                    {key.toUpperCase()}
+                  </div>
+                  <div style={{ fontSize: 18, fontWeight: 700 }}>{value}</div>
+                </div>
               ))}
-            </ul>
-          </div>
+            </div>
+          )}
+
+          {ally.equipment?.length > 0 && (
+            <div style={{ marginTop: 16 }}>
+              <h4 style={{ margin: "0 0 8px" }}>Снаряжение</h4>
+              <ul
+                style={{
+                  listStyle: "none",
+                  padding: 0,
+                  margin: 0,
+                  display: "grid",
+                  gap: 6,
+                }}
+              >
+                {ally.equipment.map((it) => (
+                  <li
+                    key={it.name}
+                    style={{ display: "flex", alignItems: "center", gap: 8 }}
+                  >
+                    <img
+                      src={it.icon}
+                      alt="icon"
+                      style={{ width: 18, height: 18 }}
+                    />
+                    <span>{it.name}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {ally.relations?.length > 0 && (
             <div style={{ marginTop: 16 }}>
               <h4 style={{ margin: "0 0 8px" }}>Связи</h4>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                {ally.relations.map((r) => {
-                  const relationPath = getCharacterPath(r.id);
-                  const content = (
+                {ally.relations.map((r) => (
+                  <Link
+                    key={r.id}
+                    to={getCharacterPath(r.id)}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
                     <figure style={{ margin: 0, textAlign: "center" }}>
                       <img
                         src={r.portrait}
@@ -185,19 +207,8 @@ export default function AllyDetail() {
                         {r.label}
                       </figcaption>
                     </figure>
-                  );
-                  return relationPath ? (
-                    <Link
-                      key={r.id}
-                      to={relationPath}
-                      style={{ textDecoration: "none", color: "inherit" }}
-                    >
-                      {content}
-                    </Link>
-                  ) : (
-                    <div key={r.id}>{content}</div>
-                  );
-                })}
+                  </Link>
+                ))}
               </div>
             </div>
           )}
@@ -205,23 +216,7 @@ export default function AllyDetail() {
           {ally.city && (
             <div style={{ marginTop: 16 }}>
               <h4 style={{ margin: "0 0 8px" }}>Город</h4>
-              {(() => {
-                const city = cities.find((c) => c.name === ally.city);
-                return city ? (
-                  <Link
-                    to={`/world/cities/${city.id}`}
-                    style={{
-                      display: "inline-block",
-                      color: "#4da3ff",
-                      textDecoration: "none",
-                    }}
-                  >
-                    {ally.city}
-                  </Link>
-                ) : (
-                  <span>{ally.city}</span>
-                );
-              })()}
+              <div>{ally.city}</div>
             </div>
           )}
 
@@ -229,9 +224,12 @@ export default function AllyDetail() {
             <div style={{ marginTop: 16 }}>
               <h4 style={{ margin: "0 0 8px" }}>Фракции</h4>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                {ally.fractions.map((f) => {
-                  const fraction = fractions.find((fr) => fr.id === f.id);
-                  const content = (
+                {ally.fractions.map((f) => (
+                  <Link
+                    key={f.id}
+                    to={`/lore/fractions/${f.id}`}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
                     <div
                       style={{
                         display: "flex",
@@ -252,19 +250,8 @@ export default function AllyDetail() {
                       )}
                       <span style={{ fontSize: 12 }}>{f.name}</span>
                     </div>
-                  );
-                  return fraction ? (
-                    <Link
-                      key={f.id}
-                      to={`/lore/fractions/${f.id}`}
-                      style={{ textDecoration: "none", color: "inherit" }}
-                    >
-                      {content}
-                    </Link>
-                  ) : (
-                    <div key={f.id}>{content}</div>
-                  );
-                })}
+                  </Link>
+                ))}
               </div>
             </div>
           )}
@@ -286,8 +273,6 @@ function Block({ title, text }) {
 
 function parseTextWithLinks(text) {
   if (!text) return text;
-
-  // Парсим markdown-ссылки вида [текст](путь)
   const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
   const parts = [];
   let lastIndex = 0;
@@ -295,12 +280,9 @@ function parseTextWithLinks(text) {
   let keyCounter = 0;
 
   while ((match = linkRegex.exec(text)) !== null) {
-    // Добавляем текст до ссылки
     if (match.index > lastIndex) {
       parts.push(text.substring(lastIndex, match.index));
     }
-
-    // Добавляем ссылку
     const linkText = match[1];
     const linkPath = match[2];
     parts.push(
@@ -312,11 +294,9 @@ function parseTextWithLinks(text) {
         {linkText}
       </Link>,
     );
-
     lastIndex = match.index + match[0].length;
   }
 
-  // Добавляем оставшийся текст
   if (lastIndex < text.length) {
     parts.push(text.substring(lastIndex));
   }
@@ -362,12 +342,4 @@ function ListBlock({ title, items, icon }) {
       </ul>
     </div>
   );
-}
-
-function getCharacterPath(id) {
-  if (!id) return null;
-  if (id.startsWith("pc-")) return `/characters/players/${id}`;
-  if (id.startsWith("npc-")) return `/characters/npcs/${id}`;
-  if (id.startsWith("ally-")) return `/characters/allies/${id}`;
-  return null;
 }

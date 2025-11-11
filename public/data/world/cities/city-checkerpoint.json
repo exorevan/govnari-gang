@@ -1,0 +1,63 @@
+{
+  "id": "city-checkerpoint",
+  "name": "Чекерпоинт",
+  "motto": "Тихая деревня на северном тракте",
+  "flag": "/assets/images/world/cities/checkerpoint_flag.png",
+  "panorama": "/assets/images/world/cities/checkerpoint_panorama.jpg",
+  "mapSmall": "/assets/images/world/cities/checkerpoint_map_small.jpg",
+  "bigMap": "/assets/images/world/cities/checkerpoint_map_big.jpg",
+  "info": {
+    "population": 150,
+    "ruler": {
+      "name": "Староста деревни",
+      "portrait": "/assets/images/characters/npcs/checkerpoint_elder.jpg"
+    },
+    "ruleType": "Старейшина",
+    "mainResource": "Сельское хозяйство",
+    "mainReligion": "Пантеон богов"
+  },
+  "history": "Чекерпоинт — небольшая деревня на северном тракте, где местные жители занимаются аграрной деятельностью: разведением скота и выращиванием провизии. Несмотря на скромные размеры, деревня привлекает путников благодаря гостеприимной таверне и базовым ремесленным услугам.",
+  "buildings": [
+    {
+      "name": "Таверна \"Коровий вздох\"",
+      "image": "/assets/images/world/cities/checkerpoint_tavern_cow_sigh.jpg"
+    },
+    {
+      "name": "Постоялый двор",
+      "image": "/assets/images/world/cities/checkerpoint_inn.jpg"
+    },
+    {
+      "name": "Кузница",
+      "image": "/assets/images/world/cities/checkerpoint_forge.jpg"
+    }
+  ],
+  "places": [
+    "Северный тракт",
+    "Жилые дома",
+    "Скотный двор",
+    "Поля и огороды",
+    "Деревенская площадь"
+  ],
+  "npcs": [
+    {
+      "id": "npc-lawrence",
+      "name": "Лоуренс",
+      "role": "Странствующий торговец",
+      "portrait": "/assets/images/characters/npcs/lawrence.jpg"
+    },
+    {
+      "id": "npc-chloe",
+      "name": "Хлоя",
+      "role": "Жена торговца Лоуренса",
+      "portrait": "/assets/images/characters/npcs/chloe.jpg"
+    }
+  ],
+  "quests": [
+    {
+      "id": "quest-black-ritual",
+      "name": "Чёрный ритуал",
+      "description": "Спасти похищенную Хлою из логова гоблинов"
+    }
+  ],
+  "news": []
+}

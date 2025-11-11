@@ -1,0 +1,34 @@
+{
+  "id": "dun-emerald-depths",
+  "name": "Изумрудные Глубины",
+  "headerImage": "/assets/images/world/dungeons/emerald_depths_entrance.jpg",
+  "danger": 3,
+  "map": "/assets/images/world/dungeons/emerald_depths_map.jpg",
+  "history": "Древние шахты друидов, оставленные после Великого Зеленого Исхода.",
+  "description": "Влажные стены, светящиеся мхи, журчание подземных потоков.",
+  "keyRooms": [
+    {
+      "num": 2,
+      "name": "Зал Корней",
+      "desc": "Корни удерживают своды"
+    },
+    {
+      "num": 8,
+      "name": "Грот Песен",
+      "desc": "Стены поют от ветра"
+    }
+  ],
+  "inhabitants": [
+    {
+      "name": "Мшистые тролли",
+      "icon": "/assets/images/icons/troll.png"
+    },
+    {
+      "name": "Пещерные нимфы",
+      "icon": "/assets/images/icons/nymph.png"
+    }
+  ],
+  "treasures": ["Друидский жезл", "Кристаллы эха"],
+  "traps": ["Корневые петли", "Спящие споры"],
+  "runsHistory": ["Переговоры с нимфами", "Обвал и спасение каравана"]
+}

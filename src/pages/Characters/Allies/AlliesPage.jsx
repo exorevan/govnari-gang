@@ -1,8 +1,13 @@
 import React from "react";
-import { Link } from "react-router-dom"; // ← Добавьте import
-import { allies } from "../../../data/characters/allies";
+import { Link } from "react-router-dom";
+import { useData } from "../../../hooks/useData";
 
 export default function AlliesPage() {
+  const { data: allies, loading, error } = useData("characters", "allies");
+
+  if (loading) return <div style={{ padding: 24 }}>Загрузка...</div>;
+  if (error) return <div style={{ padding: 24 }}>Ошибка: {error.message}</div>;
+
   return (
     <main style={{ padding: 24 }}>
       <h2 style={{ marginBottom: 16 }}>Союзники</h2>
@@ -16,7 +21,7 @@ export default function AlliesPage() {
         {allies.map((a) => (
           <Link
             key={a.id}
-            to={`/characters/allies/${a.id}`} // ← Добавьте путь
+            to={`/characters/allies/${a.id}`}
             style={{ textDecoration: "none", color: "inherit" }}
           >
             <div
@@ -25,7 +30,7 @@ export default function AlliesPage() {
                 border: "1px solid rgba(255,255,255,0.1)",
                 borderRadius: 12,
                 overflow: "hidden",
-                cursor: "pointer", // ← Добавьте курсор
+                cursor: "pointer",
                 transition: "border-color 0.2s",
               }}
               onMouseEnter={(e) => {

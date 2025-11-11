@@ -1,15 +1,97 @@
-import React from "react";
+// src/pages/Characters/PlayerCharacters/PlayerCharacterDetail.jsx
+import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { playerCharacters } from "../../../data/characters/playerCharacters";
-import { npcs } from "../../../data/characters/npcs";
-import { allies } from "../../../data/characters/allies";
-import { cities } from "../../../data/world/cities";
-import { fractions } from "../../../data/lore/fractions";
-import { gods } from "../../../data/lore/gods";
+import { getCharacterPath } from "../../../utils/getCharacterPath";
 
 export default function PlayerCharacterDetail() {
   const { id } = useParams();
-  const pc = playerCharacters.find((p) => p.id === id) || playerCharacters[0];
+  const [pc, setPc] = useState(null);
+  const [cities, setCities] = useState([]);
+  const [fractions, setFractions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        // Загружаем данные персонажа
+        const pcResponse = await fetch(`/data/characters/players/${id}.json`);
+        if (!pcResponse.ok) throw new Error("Персонаж не найден");
+        const pcData = await pcResponse.json();
+        setPc(pcData);
+
+        // Загружаем города (для ссылок)
+        try {
+          const citiesIndexResponse = await fetch(
+            "/data/world/cities/index.json",
+          );
+          if (citiesIndexResponse.ok) {
+            const cityIds = await citiesIndexResponse.json();
+            const citiesData = await Promise.all(
+              cityIds.map(async (cityId) => {
+                const response = await fetch(
+                  `/data/world/cities/${cityId}.json`,
+                );
+                return response.ok ? response.json() : null;
+              }),
+            );
+            setCities(citiesData.filter(Boolean));
+          }
+        } catch (err) {
+          console.warn("Не удалось загрузить города:", err);
+        }
+
+        // Загружаем фракции (для ссылок)
+        try {
+          const fractionsIndexResponse = await fetch(
+            "/data/lore/fractions/index.json",
+          );
+          if (fractionsIndexResponse.ok) {
+            const fractionIds = await fractionsIndexResponse.json();
+            const fractionsData = await Promise.all(
+              fractionIds.map(async (fractionId) => {
+                const response = await fetch(
+                  `/data/lore/fractions/${fractionId}.json`,
+                );
+                return response.ok ? response.json() : null;
+              }),
+            );
+            setFractions(fractionsData.filter(Boolean));
+          }
+        } catch (err) {
+          console.warn("Не удалось загрузить фракции:", err);
+        }
+      } catch (err) {
+        setError(err.message);
+        console.error("Ошибка загрузки персонажа:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadData();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <main style={{ padding: "24px", textAlign: "center", minHeight: "100%" }}>
+        <div style={{ fontSize: 18, opacity: 0.8 }}>Загрузка персонажа...</div>
+      </main>
+    );
+  }
+
+  if (error || !pc) {
+    return (
+      <main style={{ padding: "24px", minHeight: "100%" }}>
+        <div style={{ color: "#ff4d4d", marginBottom: 16 }}>
+          <strong>Ошибка:</strong> {error || "Персонаж не найден"}
+        </div>
+        <Link to="/characters/players" style={{ color: "#4da3ff" }}>
+          ← Назад к списку персонажей
+        </Link>
+      </main>
+    );
+  }
 
   return (
     <main style={{ minHeight: "100%" }}>
@@ -53,15 +135,19 @@ export default function PlayerCharacterDetail() {
               <div style={{ opacity: 0.9, marginTop: 8, fontSize: 16 }}>
                 {pc.class} • {pc.race} • ур. {pc.level}
               </div>
-              <em style={{ display: "block", marginTop: 12, opacity: 0.9 }}>
-                “{pc.quote}”
-              </em>
+              {pc.quote && (
+                <em style={{ display: "block", marginTop: 12, opacity: 0.9 }}>
+                  "{pc.quote}"
+                </em>
+              )}
             </div>
-            <img
-              src={pc.symbol}
-              alt="symbol"
-              style={{ width: 96, height: 96, objectFit: "contain" }}
-            />
+            {pc.symbol && (
+              <img
+                src={pc.symbol}
+                alt="symbol"
+                style={{ width: 96, height: 96, objectFit: "contain" }}
+              />
+            )}
           </div>
         </div>
       </section>
@@ -78,7 +164,6 @@ export default function PlayerCharacterDetail() {
         <div>
           <Block title="Внешность" text={pc.appearance} />
           <Block title="Биография" text={pc.biography} />
-
           <Block title="Личность и мотивация" text={pc.personality} />
           <ListBlock
             title="Достижения"
@@ -89,7 +174,7 @@ export default function PlayerCharacterDetail() {
             title="Важные моменты в кампании"
             items={pc.campaignMoments}
           />
-          {pc.gallery?.length ? (
+          {pc.gallery?.length > 0 && (
             <div style={{ marginTop: 24 }}>
               <h3 style={{ margin: "0 0 12px" }}>Галерея</h3>
               <div
@@ -99,9 +184,9 @@ export default function PlayerCharacterDetail() {
                   gap: 8,
                 }}
               >
-                {pc.gallery.map((src) => (
+                {pc.gallery.map((src, idx) => (
                   <img
-                    key={src}
+                    key={idx}
                     src={src}
                     alt="art"
                     style={{
@@ -114,81 +199,92 @@ export default function PlayerCharacterDetail() {
                 ))}
               </div>
             </div>
-          ) : null}
+          )}
         </div>
 
         <aside>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: 8,
-            }}
-          >
-            {Object.entries(pc.stats).map(([key, value]) => (
-              <div
-                key={key}
-                style={{
-                  background: "#111",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  borderRadius: 8,
-                  padding: 8,
-                  textAlign: "center",
-                }}
-              >
-                <div style={{ fontSize: 12, opacity: 0.8 }}>
-                  {key.toUpperCase()}
-                </div>
-                <div style={{ fontSize: 18, fontWeight: 700 }}>{value}</div>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ marginTop: 16 }}>
-            <h4 style={{ margin: "0 0 8px" }}>Снаряжение</h4>
-            <ul
+          {pc.stats && Object.keys(pc.stats).length > 0 && (
+            <div
               style={{
-                listStyle: "none",
-                padding: 0,
-                margin: 0,
                 display: "grid",
-                gap: 6,
+                gridTemplateColumns: "repeat(3, 1fr)",
+                gap: 8,
               }}
             >
-              {pc.equipment.map((it) => (
-                <li
-                  key={it.name}
-                  style={{ display: "flex", alignItems: "center", gap: 8 }}
+              {Object.entries(pc.stats).map(([key, value]) => (
+                <div
+                  key={key}
+                  style={{
+                    background: "#111",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    borderRadius: 8,
+                    padding: 8,
+                    textAlign: "center",
+                  }}
                 >
-                  <img
-                    src={it.icon}
-                    alt="icon"
-                    style={{ width: 18, height: 18 }}
-                  />
-                  <span>{it.name}</span>
-                </li>
+                  <div style={{ fontSize: 12, opacity: 0.8 }}>
+                    {key.toUpperCase()}
+                  </div>
+                  <div style={{ fontSize: 18, fontWeight: 700 }}>{value}</div>
+                </div>
               ))}
-            </ul>
-          </div>
+            </div>
+          )}
 
-          {pc.relations?.length > 0 && (
+          {pc.equipment && pc.equipment.length > 0 && (
+            <div style={{ marginTop: 16 }}>
+              <h4 style={{ margin: "0 0 8px" }}>Снаряжение</h4>
+              <ul
+                style={{
+                  listStyle: "none",
+                  padding: 0,
+                  margin: 0,
+                  display: "grid",
+                  gap: 6,
+                }}
+              >
+                {pc.equipment.map((it, idx) => (
+                  <li
+                    key={idx}
+                    style={{ display: "flex", alignItems: "center", gap: 8 }}
+                  >
+                    {it.icon && (
+                      <img
+                        src={it.icon}
+                        alt="icon"
+                        style={{ width: 18, height: 18 }}
+                      />
+                    )}
+                    <span>{it.name}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {pc.relations && pc.relations.length > 0 && (
             <div style={{ marginTop: 16 }}>
               <h4 style={{ margin: "0 0 8px" }}>Связи</h4>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                {pc.relations.map((r) => {
+                {pc.relations.map((r, idx) => {
                   const relationPath = getCharacterPath(r.id);
                   const content = (
-                    <figure style={{ margin: 0, textAlign: "center" }}>
-                      <img
-                        src={r.portrait}
-                        alt={r.label}
-                        style={{
-                          width: 60,
-                          height: 60,
-                          objectFit: "cover",
-                          borderRadius: 8,
-                        }}
-                      />
+                    <figure
+                      key={idx}
+                      style={{ margin: 0, textAlign: "center" }}
+                    >
+                      {r.portrait && (
+                        <img
+                          src={r.portrait}
+                          alt={r.label}
+                          style={{
+                            width: 60,
+                            height: 60,
+                            objectFit: "cover",
+                            borderRadius: 8,
+                          }}
+                        />
+                      )}
                       <figcaption style={{ fontSize: 12, opacity: 0.85 }}>
                         {r.label}
                       </figcaption>
@@ -196,14 +292,14 @@ export default function PlayerCharacterDetail() {
                   );
                   return relationPath ? (
                     <Link
-                      key={r.id}
+                      key={idx}
                       to={relationPath}
                       style={{ textDecoration: "none", color: "inherit" }}
                     >
                       {content}
                     </Link>
                   ) : (
-                    <div key={r.id}>{content}</div>
+                    content
                   );
                 })}
               </div>
@@ -233,14 +329,15 @@ export default function PlayerCharacterDetail() {
             </div>
           )}
 
-          {pc.fractions?.length > 0 && (
+          {pc.fractions && pc.fractions.length > 0 && (
             <div style={{ marginTop: 16 }}>
               <h4 style={{ margin: "0 0 8px" }}>Фракции</h4>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                {pc.fractions.map((f) => {
+                {pc.fractions.map((f, idx) => {
                   const fraction = fractions.find((fr) => fr.id === f.id);
                   const content = (
                     <div
+                      key={idx}
                       style={{
                         display: "flex",
                         alignItems: "center",
@@ -263,14 +360,14 @@ export default function PlayerCharacterDetail() {
                   );
                   return fraction ? (
                     <Link
-                      key={f.id}
+                      key={idx}
                       to={`/lore/fractions/${f.id}`}
                       style={{ textDecoration: "none", color: "inherit" }}
                     >
                       {content}
                     </Link>
                   ) : (
-                    <div key={f.id}>{content}</div>
+                    content
                   );
                 })}
               </div>
@@ -308,7 +405,6 @@ function Block({ title, text }) {
 function parseTextWithLinks(text) {
   if (!text) return text;
 
-  // Парсим markdown-ссылки вида [текст](путь)
   const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
   const parts = [];
   let lastIndex = 0;
@@ -316,12 +412,10 @@ function parseTextWithLinks(text) {
   let keyCounter = 0;
 
   while ((match = linkRegex.exec(text)) !== null) {
-    // Добавляем текст до ссылки
     if (match.index > lastIndex) {
       parts.push(text.substring(lastIndex, match.index));
     }
 
-    // Добавляем ссылку
     const linkText = match[1];
     const linkPath = match[2];
     parts.push(
@@ -331,13 +425,12 @@ function parseTextWithLinks(text) {
         style={{ color: "#4da3ff", textDecoration: "none", fontWeight: 500 }}
       >
         {linkText}
-      </Link>
+      </Link>,
     );
 
     lastIndex = match.index + match[0].length;
   }
 
-  // Добавляем оставшийся текст
   if (lastIndex < text.length) {
     parts.push(text.substring(lastIndex));
   }
@@ -383,12 +476,4 @@ function ListBlock({ title, items, icon }) {
       </ul>
     </div>
   );
-}
-
-function getCharacterPath(id) {
-  if (!id) return null;
-  if (id.startsWith("pc-")) return `/characters/players/${id}`;
-  if (id.startsWith("npc-")) return `/characters/npcs/${id}`;
-  if (id.startsWith("ally-")) return `/characters/allies`;
-  return null;
 }

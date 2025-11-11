@@ -1,7 +1,63 @@
-import React from "react";
-import { regions } from "../../../data/world/geography";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 export default function GeographyPage() {
+  const [regions, setRegions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function loadRegions() {
+      try {
+        setLoading(true);
+        const indexResponse = await fetch("/data/world/geography/index.json");
+        if (!indexResponse.ok) {
+          throw new Error("Не удалось загрузить список регионов");
+        }
+        const ids = await indexResponse.json();
+
+        const regionsData = await Promise.all(
+          ids.map(async (id) => {
+            const response = await fetch(`/data/world/geography/${id}.json`);
+            if (!response.ok) {
+              throw new Error(`Не удалось загрузить регион ${id}`);
+            }
+            return response.json();
+          }),
+        );
+
+        setRegions(regionsData);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadRegions();
+  }, []);
+
+  if (loading) {
+    return (
+      <main style={{ padding: 24, textAlign: "center" }}>
+        <div>Загрузка географии...</div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main style={{ padding: 24 }}>
+        <div style={{ color: "#ff4d4d", marginBottom: 16 }}>
+          Ошибка: {error}
+        </div>
+        <Link to="/world" style={{ color: "#4da3ff", textDecoration: "none" }}>
+          ← Назад к миру
+        </Link>
+      </main>
+    );
+  }
+
   return (
     <main style={{ paddingBottom: 24 }}>
       {regions.map((r) => (
@@ -55,21 +111,23 @@ export default function GeographyPage() {
               <ListBlock title="Известные локации" items={r.locations} />
               <Block title="Население" text={r.peoples} />
             </div>
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              {r.thumbs.map((t) => (
-                <img
-                  key={t}
-                  src={t}
-                  alt="view"
-                  style={{
-                    width: 200,
-                    height: 120,
-                    objectFit: "cover",
-                    borderRadius: 8,
-                  }}
-                />
-              ))}
-            </div>
+            {r.thumbs && r.thumbs.length > 0 && (
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                {r.thumbs.map((t, idx) => (
+                  <img
+                    key={idx}
+                    src={t}
+                    alt="view"
+                    style={{
+                      width: 200,
+                      height: 120,
+                      objectFit: "cover",
+                      borderRadius: 8,
+                    }}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </section>
       ))}
@@ -87,6 +145,7 @@ function Block({ title, text }) {
 }
 
 function ListBlock({ title, items }) {
+  if (!items || items.length === 0) return null;
   return (
     <div>
       <div style={{ fontWeight: 700, marginBottom: 6 }}>{title}</div>

@@ -1,11 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { npcs } from "../../../data/characters/npcs";
+import { useData } from "../../../hooks/useData";
 
 export default function NPCsPage() {
+  const { data: npcs, loading, error } = useData("characters", "npcs");
+
+  if (loading) return <div style={{ padding: 24 }}>Загрузка...</div>;
+  if (error) return <div style={{ padding: 24 }}>Ошибка: {error.message}</div>;
+
   return (
     <main style={{ padding: 24 }}>
-      <h2 style={{ marginBottom: 16 }}>НПЦ</h2>
+      <h2 style={{ marginBottom: 16 }}>НПС</h2>
       <div
         style={{
           display: "grid",
@@ -38,7 +43,7 @@ export default function NPCsPage() {
               style={{
                 position: "relative",
                 height: 160,
-                background: `url(${n.banner}) center/cover no-repeat`,
+                background: `url(${n.banner || n.portrait}) center/cover no-repeat`,
               }}
             >
               <div
@@ -62,17 +67,21 @@ export default function NPCsPage() {
                 alignItems: "center",
               }}
             >
-              <img
-                src={n.symbol}
-                alt="symbol"
-                style={{
-                  width: 24,
-                  height: 24,
-                  objectFit: "contain",
-                  opacity: 0.9,
-                }}
-              />
-              <em style={{ opacity: 0.8, fontSize: 13 }}>“{n.quote}”</em>
+              {n.symbol && (
+                <img
+                  src={n.symbol}
+                  alt="symbol"
+                  style={{
+                    width: 24,
+                    height: 24,
+                    objectFit: "contain",
+                    opacity: 0.9,
+                  }}
+                />
+              )}
+              {n.quote && (
+                <em style={{ opacity: 0.8, fontSize: 13 }}>"{n.quote}"</em>
+              )}
             </div>
           </Link>
         ))}

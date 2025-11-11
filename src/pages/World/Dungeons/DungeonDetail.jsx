@@ -1,18 +1,66 @@
-import React from "react";
-import { useParams } from "react-router-dom";
-import { dungeons } from "../../../data/world/dungeons";
+import React, { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
 
 export default function DungeonDetail() {
   const { id } = useParams();
-  const dun = dungeons.find((d) => d.id === id) || dungeons[0];
+  const [dungeon, setDungeon] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function loadDungeon() {
+      try {
+        setLoading(true);
+
+        const response = await fetch(`/data/world/dungeons/${id}.json`);
+        if (!response.ok) {
+          throw new Error("Подземелье не найдено");
+        }
+        const data = await response.json();
+        setDungeon(data);
+      } catch (err) {
+        setError(err.message);
+        console.error("Ошибка загрузки подземелья:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadDungeon();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <main style={{ padding: 24, textAlign: "center" }}>
+        <div style={{ fontSize: 18, opacity: 0.8 }}>Загрузка подземелья...</div>
+      </main>
+    );
+  }
+
+  if (error || !dungeon) {
+    return (
+      <main style={{ padding: 24 }}>
+        <div style={{ color: "#ff4d4d", marginBottom: 16 }}>
+          <strong>Ошибка:</strong> {error || "Подземелье не найдено"}
+        </div>
+        <Link
+          to="/world/dungeons"
+          style={{ color: "#4da3ff", textDecoration: "none" }}
+        >
+          ← Назад к подземельям
+        </Link>
+      </main>
+    );
+  }
 
   return (
     <main style={{ minHeight: "100%" }}>
+      {/* Hero Section */}
       <section
         style={{
           position: "relative",
-          height: "40vh",
-          background: `url(${dun.headerImage}) center/cover no-repeat`,
+          height: "50vh",
+          background: `url(${dungeon.headerImage}) center/cover no-repeat`,
           filter: "brightness(0.9)",
         }}
       >
@@ -26,7 +74,7 @@ export default function DungeonDetail() {
         <div
           style={{
             position: "absolute",
-            bottom: 16,
+            bottom: 24,
             left: 24,
             right: 24,
             display: "flex",
@@ -34,11 +82,12 @@ export default function DungeonDetail() {
             justifyContent: "space-between",
           }}
         >
-          <h1 style={{ margin: 0 }}>{dun.name}</h1>
-          <Danger level={dun.danger} />
+          <h1 style={{ margin: 0, fontSize: 44 }}>{dungeon.name}</h1>
+          <DangerLevel level={dungeon.danger} />
         </div>
       </section>
 
+      {/* Content */}
       <section
         style={{
           display: "grid",
@@ -48,12 +97,13 @@ export default function DungeonDetail() {
         }}
       >
         <div>
-          <div>
-            <div style={{ fontWeight: 700, marginBottom: 8 }}>
+          {/* Map */}
+          <div style={{ marginBottom: 24 }}>
+            <h3 style={{ margin: "0 0 12px", fontSize: 20 }}>
               Карта подземелья
-            </div>
+            </h3>
             <img
-              src={dun.map}
+              src={dungeon.map}
               alt="map"
               style={{
                 width: "100%",
@@ -62,53 +112,83 @@ export default function DungeonDetail() {
               }}
             />
           </div>
-          <Block title="История" text={dun.history} />
-          <Block title="Описание" text={dun.description} />
-          <div style={{ marginTop: 16 }}>
-            <h3 style={{ margin: "0 0 8px" }}>Ключевые комнаты</h3>
-            <div style={{ display: "grid", gap: 8 }}>
-              {dun.keyRooms.map((r) => (
-                <div
-                  key={r.num}
-                  style={{
-                    background: "#111",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    borderRadius: 8,
-                    padding: 10,
-                  }}
-                >
-                  <div style={{ fontWeight: 700 }}>
-                    #{r.num} — {r.name}
+
+          <Block title="История" text={dungeon.history} />
+          <Block title="Описание" text={dungeon.description} />
+
+          {/* Key Rooms */}
+          {dungeon.keyRooms && dungeon.keyRooms.length > 0 && (
+            <div style={{ marginTop: 24 }}>
+              <h3 style={{ margin: "0 0 12px", fontSize: 20 }}>
+                Ключевые комнаты
+              </h3>
+              <div style={{ display: "grid", gap: 12 }}>
+                {dungeon.keyRooms.map((room) => (
+                  <div
+                    key={room.num}
+                    style={{
+                      background: "#0a0a0a",
+                      border: "1px solid rgba(255,255,255,0.08)",
+                      borderRadius: 8,
+                      padding: 16,
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontWeight: 700,
+                        marginBottom: 6,
+                        color: "#d4af37",
+                      }}
+                    >
+                      Комната #{room.num} — {room.name}
+                    </div>
+                    <div style={{ opacity: 0.9, lineHeight: 1.6 }}>
+                      {room.desc}
+                    </div>
                   </div>
-                  <div style={{ opacity: 0.9 }}>{r.desc}</div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
+        {/* Sidebar */}
         <aside>
-          <IconList title="Обитатели" items={dun.inhabitants} />
-          <ListBlock title="Сокровища" items={dun.treasures} />
-          <ListBlock title="Ловушки и загадки" items={dun.traps} />
+          {dungeon.inhabitants && dungeon.inhabitants.length > 0 && (
+            <IconList title="Обитатели" items={dungeon.inhabitants} />
+          )}
+
+          {dungeon.treasures && dungeon.treasures.length > 0 && (
+            <ListBlock title="Сокровища" items={dungeon.treasures} />
+          )}
+
+          {dungeon.traps && dungeon.traps.length > 0 && (
+            <ListBlock title="Ловушки и загадки" items={dungeon.traps} />
+          )}
         </aside>
       </section>
 
-      <section style={{ padding: 24 }}>
-        <ListBlock title="История прохождений" items={dun.runsHistory} />
-      </section>
+      {/* History of Runs */}
+      {dungeon.runsHistory && dungeon.runsHistory.length > 0 && (
+        <section style={{ padding: "0 24px 24px" }}>
+          <ListBlock title="История прохождений" items={dungeon.runsHistory} />
+        </section>
+      )}
     </main>
   );
 }
 
-function Danger({ level }) {
+function DangerLevel({ level }) {
   const skulls = Array.from({ length: 5 }).map((_, i) => i < level);
   return (
-    <div>
+    <div style={{ display: "flex", gap: 4 }}>
       {skulls.map((filled, idx) => (
         <span
           key={idx}
-          style={{ color: filled ? "#c0392b" : "#555", marginLeft: 2 }}
+          style={{
+            color: filled ? "#c0392b" : "#555",
+            fontSize: 24,
+          }}
         >
           ☠
         </span>
@@ -118,42 +198,63 @@ function Danger({ level }) {
 }
 
 function Block({ title, text }) {
+  if (!text) return null;
   return (
-    <div style={{ marginTop: 16 }}>
-      <h3 style={{ margin: "0 0 8px" }}>{title}</h3>
-      <p style={{ margin: 0, lineHeight: 1.65 }}>{text}</p>
+    <div style={{ marginTop: 24 }}>
+      <h3 style={{ margin: "0 0 12px", fontSize: 20 }}>{title}</h3>
+      <p
+        style={{
+          margin: 0,
+          lineHeight: 1.7,
+          background: "#0a0a0a",
+          padding: 16,
+          borderRadius: 8,
+          border: "1px solid rgba(255,255,255,0.08)",
+        }}
+      >
+        {text}
+      </p>
     </div>
   );
 }
 
 function ListBlock({ title, items }) {
+  if (!items || items.length === 0) return null;
   return (
-    <div style={{ marginTop: 16 }}>
-      <h3 style={{ margin: "0 0 8px" }}>{title}</h3>
+    <div style={{ marginTop: 24 }}>
+      <h3 style={{ margin: "0 0 12px", fontSize: 20 }}>{title}</h3>
       <ul
         style={{
           listStyle: "none",
           padding: 0,
           margin: 0,
           display: "grid",
-          gap: 6,
+          gap: 8,
         }}
       >
-        {items.map((it, idx) => (
+        {items.map((item, idx) => (
           <li
             key={idx}
-            style={{ display: "flex", alignItems: "center", gap: 8 }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              padding: 12,
+              background: "#0a0a0a",
+              borderRadius: 8,
+              border: "1px solid rgba(255,255,255,0.08)",
+            }}
           >
             <span
               style={{
-                width: 6,
-                height: 6,
-                borderRadius: 99,
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
                 background: "#d4af37",
-                display: "inline-block",
+                flexShrink: 0,
               }}
             />
-            <span>{it}</span>
+            <span style={{ lineHeight: 1.5 }}>{item}</span>
           </li>
         ))}
       </ul>
@@ -162,17 +263,31 @@ function ListBlock({ title, items }) {
 }
 
 function IconList({ title, items }) {
+  if (!items || items.length === 0) return null;
   return (
-    <div style={{ marginTop: 16 }}>
-      <h3 style={{ margin: "0 0 8px" }}>{title}</h3>
-      <div style={{ display: "grid", gap: 8 }}>
-        {items.map((it) => (
+    <div style={{ marginBottom: 24 }}>
+      <h4 style={{ margin: "0 0 12px", fontSize: 18 }}>{title}</h4>
+      <div
+        style={{
+          display: "grid",
+          gap: 10,
+          background: "#0a0a0a",
+          padding: 16,
+          borderRadius: 8,
+          border: "1px solid rgba(255,255,255,0.08)",
+        }}
+      >
+        {items.map((item, idx) => (
           <div
-            key={it.name}
-            style={{ display: "flex", gap: 8, alignItems: "center" }}
+            key={idx}
+            style={{ display: "flex", gap: 10, alignItems: "center" }}
           >
-            <img src={it.icon} alt="icon" style={{ width: 18, height: 18 }} />
-            <span>{it.name}</span>
+            <img
+              src={item.icon}
+              alt="icon"
+              style={{ width: 20, height: 20, opacity: 0.9 }}
+            />
+            <span style={{ lineHeight: 1.5 }}>{item.name}</span>
           </div>
         ))}
       </div>

@@ -1,22 +1,107 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { sessions } from "../../../data/chronicles/sessions";
-import { playerCharacters } from "../../../data/characters/playerCharacters";
-import { npcs } from "../../../data/characters/npcs";
-import { allies } from "../../../data/characters/allies";
+import { getCharacterPath } from "../../../utils/getCharacterPath";
 
-function findCharacter(id) {
-  return (
-    playerCharacters.find((c) => c.id === id) ||
-    npcs.find((c) => c.id === id) ||
-    allies.find((c) => c.id === id)
-  );
+function findCharacter(id, allCharacters) {
+  return allCharacters.find((c) => c.id === id);
 }
 
 export default function SessionDetail() {
   const { id } = useParams();
+  const [session, setSession] = useState(null);
+  const [allCharacters, setAllCharacters] = useState([]);
+  const [sessions, setSessions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        setLoading(true);
+
+        // Загружаем сессию
+        const sessionResponse = await fetch(
+          `/data/chronicles/sessions/${id}.json`,
+        );
+        if (!sessionResponse.ok) throw new Error("Failed to load session data");
+        const sessionData = await sessionResponse.json();
+        setSession(sessionData);
+
+        // Загружаем список всех сессий для навигации
+        const sessionsResponse = await fetch(
+          "/data/chronicles/sessions/index.json",
+        );
+        if (sessionsResponse.ok) {
+          const sessionsData = await sessionsResponse.json();
+          setSessions(sessionsData);
+        }
+
+        // Загружаем персонажей для участников
+        const characters = [];
+        if (sessionData.participants) {
+          for (const participantId of sessionData.participants) {
+            try {
+              let response;
+              if (participantId.startsWith("pc-")) {
+                response = await fetch(
+                  `/data/characters/players/${participantId}.json`,
+                );
+              } else if (participantId.startsWith("npc-")) {
+                response = await fetch(
+                  `/data/characters/npcs/${participantId}.json`,
+                );
+              } else if (participantId.startsWith("ally-")) {
+                response = await fetch(
+                  `/data/characters/allies/${participantId}.json`,
+                );
+              }
+              if (response && response.ok) {
+                const char = await response.json();
+                characters.push(char);
+              }
+            } catch (err) {
+              console.warn(`Failed to load character ${participantId}`, err);
+            }
+          }
+        }
+        setAllCharacters(characters);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <main style={{ padding: 24, textAlign: "center" }}>
+        <div>Загрузка сессии...</div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main style={{ padding: 24 }}>
+        <h2>Ошибка загрузки</h2>
+        <p>{error}</p>
+        <Link to="/chronicles/sessions">← Назад к сессиям</Link>
+      </main>
+    );
+  }
+
+  if (!session) {
+    return (
+      <main style={{ padding: 24 }}>
+        <h2>Сессия не найдена</h2>
+        <Link to="/chronicles/sessions">← Назад к сессиям</Link>
+      </main>
+    );
+  }
+
   const idx = sessions.findIndex((s) => s.id === id);
-  const s = sessions[idx] || sessions[0];
   const prev = sessions[idx - 1];
   const next = sessions[idx + 1];
 
@@ -25,8 +110,8 @@ export default function SessionDetail() {
       {/* Top */}
       <section style={{ position: "relative", height: 320 }}>
         <img
-          src={s.heroImage}
-          alt={s.title}
+          src={session.heroImage}
+          alt={session.title}
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
         <div
@@ -49,9 +134,9 @@ export default function SessionDetail() {
         >
           <div>
             <div style={{ opacity: 0.95 }}>
-              {s.realDate} • {s.gameDate} • #{s.num}
+              {session.realDate} • {session.gameDate} • #{session.num}
             </div>
-            <h1 style={{ margin: 0 }}>{s.title}</h1>
+            <h1 style={{ margin: 0 }}>{session.title}</h1>
           </div>
         </div>
       </section>
@@ -66,14 +151,14 @@ export default function SessionDetail() {
         }}
       >
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
-          <Block title="Краткое содержание" text={s.summary} />
+          <Block title="Краткое содержание" text={session.summary} />
 
-          {s.participants?.length > 0 && (
+          {session.participants?.length > 0 && (
             <div style={{ marginTop: 16 }}>
               <div style={{ fontWeight: 700, marginBottom: 8 }}>Участники</div>
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-                {s.participants.map((participantId) => {
-                  const character = findCharacter(participantId);
+                {session.participants.map((participantId) => {
+                  const character = findCharacter(participantId, allCharacters);
                   if (!character) return null;
 
                   const participantPath = getCharacterPath(participantId);
@@ -116,12 +201,12 @@ export default function SessionDetail() {
           )}
 
           {/* Главы */}
-          {s.chapters?.length > 0 && (
+          {session.chapters?.length > 0 && (
             <div style={{ marginTop: 24 }}>
               <h2 style={{ margin: "0 0 16px", fontSize: "1.5rem" }}>
                 История приключения
               </h2>
-              {s.chapters.map((chapter, idx) => (
+              {session.chapters.map((chapter, idx) => (
                 <ChapterBlock
                   key={idx}
                   number={idx + 1}
@@ -132,15 +217,15 @@ export default function SessionDetail() {
             </div>
           )}
 
-          <ListBlock title="Ключевые моменты" items={s.keyMoments} />
-          <ListBlock title="Решения игроков" items={s.decisions} />
-          <ListBlock title="Последствия" items={s.consequences} />
+          <ListBlock title="Ключевые моменты" items={session.keyMoments} />
+          <ListBlock title="Решения игроков" items={session.decisions} />
+          <ListBlock title="Последствия" items={session.consequences} />
         </div>
 
         <aside>
-          <InfoCard title="MVP сессии" value={s.mvp} />
-          <InfoCard title="Лучшая цитата" value={`"${s.bestQuote}"`} />
-          <ListBlock title="Полученный опыт и лут" items={s.rewards} />
+          <InfoCard title="MVP сессии" value={session.mvp} />
+          <InfoCard title="Лучшая цитата" value={`"${session.bestQuote}"`} />
+          <ListBlock title="Полученный опыт и лут" items={session.rewards} />
         </aside>
       </section>
 
@@ -244,7 +329,6 @@ function ChapterBlock({ number, title, text }) {
 function parseTextWithLinks(text) {
   if (!text) return text;
 
-  // Парсим markdown-ссылки вида [текст](путь)
   const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
   const parts = [];
   let lastIndex = 0;
@@ -252,12 +336,10 @@ function parseTextWithLinks(text) {
   let keyCounter = 0;
 
   while ((match = linkRegex.exec(text)) !== null) {
-    // Добавляем текст до ссылки
     if (match.index > lastIndex) {
       parts.push(text.substring(lastIndex, match.index));
     }
 
-    // Добавляем ссылку
     const linkText = match[1];
     const linkPath = match[2];
     parts.push(
@@ -267,13 +349,12 @@ function parseTextWithLinks(text) {
         style={{ color: "#4da3ff", textDecoration: "none", fontWeight: 500 }}
       >
         {linkText}
-      </Link>
+      </Link>,
     );
 
     lastIndex = match.index + match[0].length;
   }
 
-  // Добавляем оставшийся текст
   if (lastIndex < text.length) {
     parts.push(text.substring(lastIndex));
   }
@@ -333,12 +414,4 @@ function InfoCard({ title, value }) {
       <div>{value}</div>
     </div>
   );
-}
-
-function getCharacterPath(id) {
-  if (!id) return null;
-  if (id.startsWith("pc-")) return `/characters/players/${id}`;
-  if (id.startsWith("npc-")) return `/characters/npcs/${id}`;
-  if (id.startsWith("ally-")) return `/characters/allies`;
-  return null;
 }

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "convert": "node scripts/convertToJSON.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json}\""

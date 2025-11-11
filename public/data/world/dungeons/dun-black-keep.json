@@ -1,0 +1,37 @@
+{
+  "id": "dun-black-keep",
+  "name": "Чёрный Замок",
+  "headerImage": "/assets/images/world/dungeons/black_keep_entrance.jpg",
+  "danger": 4,
+  "map": "/assets/images/world/dungeons/black_keep_map.jpg",
+  "history": "Построен некромантом Эрсином. После падения хозяина превратился в логово теней.",
+  "description": "Холодные залы, эхо шагов. Факелы гаснут сами собой.",
+  "keyRooms": [
+    {
+      "num": 3,
+      "name": "Зал Эха",
+      "desc": "Усиление шёпота до оглушения"
+    },
+    {
+      "num": 7,
+      "name": "Костяная библиотека",
+      "desc": "Книги из костяных пластин"
+    }
+  ],
+  "inhabitants": [
+    {
+      "name": "Теневой рыцарь",
+      "icon": "/assets/images/icons/skull.png"
+    },
+    {
+      "name": "Призрачные слуги",
+      "icon": "/assets/images/icons/ghost.png"
+    }
+  ],
+  "treasures": ["Клинок Полуночи", "Печать Эрсина"],
+  "traps": ["Безмолвные руны", "Ловушки-иллюзии"],
+  "runsHistory": [
+    "Осада и героическая оборона ворот",
+    "Побег по подземной реке"
+  ]
+}

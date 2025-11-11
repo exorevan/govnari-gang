@@ -37,8 +37,10 @@ import HistoryPage from "../pages/Lore/History/HistoryPage.jsx";
 import LegendsPage from "../pages/Lore/Legends/LegendsPage.jsx";
 // Rules
 import RulesIndex from "../pages/Rules/index.jsx";
-import HomebrewPage from "../pages/Rules/Homebrew/HomebrewPage.jsx";
+import HomebrewsPage from "../pages/Rules/Homebrew/HomebrewsPage.jsx";
 import MechanicsPage from "../pages/Rules/Mechanics/MechanicsPage.jsx";
+import HomebrewDetail from "../pages/Rules/Homebrew/HomebrewDetail.jsx";
+import MechanicDetail from "../pages/Rules/Mechanics/MechanicDetail.jsx";
 // Media
 import MediaIndex from "../pages/Media/index.jsx";
 import GalleryPage from "../pages/Media/Gallery/GalleryPage.jsx";
@@ -92,8 +94,10 @@ export default function RoutesRoot() {
       <Route path="/lore/legends" element={<LegendsPage />} />
 
       <Route path="/rules" element={<RulesIndex />} />
-      <Route path="/rules/homebrew" element={<HomebrewPage />} />
+      <Route path="/rules/homebrew" element={<HomebrewsPage />} />
+      <Route path="/rules/homebrew/:id" element={<HomebrewDetail />} />
       <Route path="/rules/mechanics" element={<MechanicsPage />} />
+      <Route path="/rules/mechanics/:id" element={<MechanicDetail />} />
 
       <Route path="/media" element={<MediaIndex />} />
       <Route path="/media/gallery" element={<GalleryPage />} />

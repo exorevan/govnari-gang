@@ -1,0 +1,28 @@
+{
+  "id": "pc-ikatni",
+  "name": "Икатни",
+  "city": "",
+  "class": "Чародей",
+  "race": "",
+  "level": 4,
+  "banner": "",
+  "symbol": "",
+  "quote": "",
+  "appearance": "",
+  "biography": "",
+  "personality": "",
+  "achievements": [],
+  "campaignMoments": [],
+  "stats": {
+    "str": 0,
+    "dex": 0,
+    "con": 0,
+    "int": 0,
+    "wis": 0,
+    "cha": 0
+  },
+  "equipment": [],
+  "relations": [],
+  "fractions": [],
+  "gallery": []
+}

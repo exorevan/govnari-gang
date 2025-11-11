@@ -1,8 +1,67 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { establishments } from "../../../data/world/establishments";
 
 export default function EstablishmentsPage() {
+  const [establishments, setEstablishments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function loadEstablishments() {
+      try {
+        setLoading(true);
+        const indexResponse = await fetch(
+          "/data/world/establishments/index.json",
+        );
+        if (!indexResponse.ok) {
+          throw new Error("Не удалось загрузить список заведений");
+        }
+        const ids = await indexResponse.json();
+
+        const establishmentsData = await Promise.all(
+          ids.map(async (id) => {
+            const response = await fetch(
+              `/data/world/establishments/${id}.json`,
+            );
+            if (!response.ok) {
+              throw new Error(`Не удалось загрузить заведение ${id}`);
+            }
+            return response.json();
+          }),
+        );
+
+        setEstablishments(establishmentsData);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadEstablishments();
+  }, []);
+
+  if (loading) {
+    return (
+      <main style={{ padding: 24, textAlign: "center" }}>
+        <div>Загрузка заведений...</div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main style={{ padding: 24 }}>
+        <div style={{ color: "#ff4d4d", marginBottom: 16 }}>
+          Ошибка: {error}
+        </div>
+        <Link to="/world" style={{ color: "#4da3ff", textDecoration: "none" }}>
+          ← Назад к миру
+        </Link>
+      </main>
+    );
+  }
+
   const grouped = groupByCategory(establishments);
 
   return (
@@ -168,4 +227,3 @@ function HeaderImage({ establishment }) {
     </div>
   );
 }
-

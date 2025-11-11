@@ -1,8 +1,53 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { fractions } from "../../../data/lore/fractions";
 
 export default function FractionsPage() {
+  const [fractions, setFractions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function loadFractions() {
+      try {
+        setLoading(true);
+        const response = await fetch("/data/lore/fractions.json");
+        if (!response.ok) {
+          throw new Error("Не удалось загрузить фракции");
+        }
+        const data = await response.json();
+        setFractions(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadFractions();
+  }, []);
+
+  if (loading) {
+    return (
+      <main style={{ padding: 24, textAlign: "center" }}>
+        <div>Загрузка фракций...</div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main style={{ padding: 24 }}>
+        <div style={{ color: "#ff4d4d" }}>Ошибка: {error}</div>
+        <Link
+          to="/lore"
+          style={{ color: "#4da3ff", marginTop: 16, display: "inline-block" }}
+        >
+          Вернуться к разделу "Знания"
+        </Link>
+      </main>
+    );
+  }
+
   return (
     <main style={{ padding: 24 }}>
       <h2 style={{ marginBottom: 16 }}>Фракции</h2>

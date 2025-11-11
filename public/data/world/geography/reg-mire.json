@@ -1,0 +1,16 @@
+{
+  "id": "reg-mire",
+  "name": "Багровые Болота",
+  "type": "болота",
+  "panorama": "/assets/images/world/regions/mire_panorama.jpg",
+  "bigMap": "/assets/images/world/regions/mire_map.jpg",
+  "climate": "Влажно, туманно. Тёплые зимы, душные лета.",
+  "floraFauna": "Ивы, камыши, ядовитые цветы, болотные гадюки, светлячки.",
+  "dangers": "Топи, миазмы, болотные огни, племена троглодитов.",
+  "locations": ["Затонувшая колокольня", "Тропа Светляков"],
+  "peoples": "Рыбаки-ловчие, отшельники-знахари.",
+  "thumbs": [
+    "/assets/images/world/regions/mire_1.jpg",
+    "/assets/images/world/regions/mire_2.jpg"
+  ]
+}

@@ -1,8 +1,53 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { gods } from "../../../data/lore/gods";
 
 export default function GodsPage() {
+  const [gods, setGods] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function loadGods() {
+      try {
+        setLoading(true);
+        const response = await fetch("/data/lore/gods.json");
+        if (!response.ok) {
+          throw new Error("Не удалось загрузить богов");
+        }
+        const data = await response.json();
+        setGods(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadGods();
+  }, []);
+
+  if (loading) {
+    return (
+      <main style={{ padding: "24px", textAlign: "center" }}>
+        <div>Загрузка богов...</div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main style={{ padding: "24px" }}>
+        <div style={{ color: "#ff4d4d" }}>Ошибка: {error}</div>
+        <Link
+          to="/lore"
+          style={{ color: "#4da3ff", marginTop: 16, display: "inline-block" }}
+        >
+          Вернуться к разделу "Знания"
+        </Link>
+      </main>
+    );
+  }
+
   return (
     <main style={{ padding: "24px" }}>
       <h2 style={{ marginBottom: "16px" }}>Боги</h2>
@@ -64,7 +109,7 @@ export default function GodsPage() {
                   opacity: 0.9,
                 }}
               />
-              <em style={{ opacity: 0.8, fontSize: 13 }}>“{gd.quote}”</em>
+              <em style={{ opacity: 0.8, fontSize: 13 }}>"{gd.quote}"</em>
             </div>
           </Link>
         ))}

@@ -4,7 +4,7 @@ const navigation = [
     path: "/characters",
     children: [
       { label: "Игровые персонажи", path: "/characters/players" },
-      { label: "НПЦ", path: "/characters/npcs" },
+      { label: "НПС", path: "/characters/npcs" },
       { label: "Союзники", path: "/characters/allies" },
       { label: "Враги", path: "/characters/enemies" },
       { label: "Павшие", path: "/characters/deceased" },

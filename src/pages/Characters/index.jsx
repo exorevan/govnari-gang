@@ -19,7 +19,7 @@ export default function CharactersIndex() {
             img: "/assets/images/chars/lyria_hero.jpg",
           },
           {
-            label: "НПЦ",
+            label: "НПС",
             to: "/characters/npcs",
             img: "/assets/images/chars/velka_hero.jpg",
           },

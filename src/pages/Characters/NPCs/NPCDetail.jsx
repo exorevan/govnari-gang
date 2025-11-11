@@ -1,12 +1,15 @@
 import React from "react";
 import { useParams, Link } from "react-router-dom";
-import { npcs } from "../../../data/characters/npcs";
-import { cities } from "../../../data/world/cities";
-import { fractions } from "../../../data/lore/fractions";
+import { useData } from "../../../hooks/useData";
+import { getCharacterPath } from "../../../utils/getCharacterPath";
 
 export default function NPCDetail() {
   const { id } = useParams();
-  const npc = npcs.find((n) => n.id === id) || npcs[0];
+  const { data: npc, loading, error } = useData("characters", "npcs", id);
+
+  if (loading) return <div style={{ padding: 24 }}>Загрузка...</div>;
+  if (error) return <div style={{ padding: 24 }}>Ошибка: {error.message}</div>;
+  if (!npc) return <div style={{ padding: 24 }}>НПС не найден</div>;
 
   return (
     <main style={{ minHeight: "100%" }}>
@@ -14,7 +17,7 @@ export default function NPCDetail() {
         style={{
           position: "relative",
           height: "50vh",
-          background: `url(${npc.banner}) center/cover no-repeat`,
+          background: `url(${npc.banner || npc.portrait}) center/cover no-repeat`,
         }}
       >
         <div
@@ -47,15 +50,19 @@ export default function NPCDetail() {
                 {npc.name}
               </h1>
               <div style={{ opacity: 0.9, marginTop: 6 }}>{npc.role}</div>
-              <em style={{ display: "block", marginTop: 12, opacity: 0.9 }}>
-                “{npc.quote}”
-              </em>
+              {npc.quote && (
+                <em style={{ display: "block", marginTop: 12, opacity: 0.9 }}>
+                  "{npc.quote}"
+                </em>
+              )}
             </div>
-            <img
-              src={npc.symbol}
-              alt="symbol"
-              style={{ width: 80, height: 80, objectFit: "contain" }}
-            />
+            {npc.symbol && (
+              <img
+                src={npc.symbol}
+                alt="symbol"
+                style={{ width: 80, height: 80, objectFit: "contain" }}
+              />
+            )}
           </div>
         </div>
       </section>
@@ -69,19 +76,25 @@ export default function NPCDetail() {
         }}
       >
         <div>
-          <Block title="Внешность" text={npc.appearance} />
-          <Block title="Биография" text={npc.biography} />
-          <Block title="Личность и мотивация" text={npc.personality} />
-          <ListBlock
-            title="Достижения"
-            items={npc.achievements}
-            icon="/assets/images/icons/trophy-gold.png"
-          />
-          <ListBlock
-            title="Важные моменты в кампании"
-            items={npc.campaignMoments}
-          />
-          {npc.gallery?.length ? (
+          {npc.appearance && <Block title="Внешность" text={npc.appearance} />}
+          {npc.biography && <Block title="Биография" text={npc.biography} />}
+          {npc.personality && (
+            <Block title="Личность и мотивация" text={npc.personality} />
+          )}
+          {npc.achievements?.length > 0 && (
+            <ListBlock
+              title="Достижения"
+              items={npc.achievements}
+              icon="/assets/images/icons/trophy-gold.png"
+            />
+          )}
+          {npc.campaignMoments?.length > 0 && (
+            <ListBlock
+              title="Важные моменты в кампании"
+              items={npc.campaignMoments}
+            />
+          )}
+          {npc.gallery?.length > 0 && (
             <div style={{ marginTop: 24 }}>
               <h3 style={{ margin: "0 0 12px" }}>Галерея</h3>
               <div
@@ -106,70 +119,77 @@ export default function NPCDetail() {
                 ))}
               </div>
             </div>
-          ) : null}
+          )}
         </div>
 
         <aside>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: 8,
-            }}
-          >
-            {Object.entries(npc.stats).map(([key, value]) => (
-              <div
-                key={key}
-                style={{
-                  background: "#111",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  borderRadius: 8,
-                  padding: 8,
-                  textAlign: "center",
-                }}
-              >
-                <div style={{ fontSize: 12, opacity: 0.8 }}>
-                  {key.toUpperCase()}
-                </div>
-                <div style={{ fontSize: 18, fontWeight: 700 }}>{value}</div>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ marginTop: 16 }}>
-            <h4 style={{ margin: "0 0 8px" }}>Снаряжение</h4>
-            <ul
+          {npc.stats && Object.keys(npc.stats).length > 0 && (
+            <div
               style={{
-                listStyle: "none",
-                padding: 0,
-                margin: 0,
                 display: "grid",
-                gap: 6,
+                gridTemplateColumns: "repeat(3, 1fr)",
+                gap: 8,
               }}
             >
-              {npc.equipment.map((it) => (
-                <li
-                  key={it.name}
-                  style={{ display: "flex", alignItems: "center", gap: 8 }}
+              {Object.entries(npc.stats).map(([key, value]) => (
+                <div
+                  key={key}
+                  style={{
+                    background: "#111",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    borderRadius: 8,
+                    padding: 8,
+                    textAlign: "center",
+                  }}
                 >
-                  <img
-                    src={it.icon}
-                    alt="icon"
-                    style={{ width: 18, height: 18 }}
-                  />
-                  <span>{it.name}</span>
-                </li>
+                  <div style={{ fontSize: 12, opacity: 0.8 }}>
+                    {key.toUpperCase()}
+                  </div>
+                  <div style={{ fontSize: 18, fontWeight: 700 }}>{value}</div>
+                </div>
               ))}
-            </ul>
-          </div>
+            </div>
+          )}
+
+          {npc.equipment?.length > 0 && (
+            <div style={{ marginTop: 16 }}>
+              <h4 style={{ margin: "0 0 8px" }}>Снаряжение</h4>
+              <ul
+                style={{
+                  listStyle: "none",
+                  padding: 0,
+                  margin: 0,
+                  display: "grid",
+                  gap: 6,
+                }}
+              >
+                {npc.equipment.map((it) => (
+                  <li
+                    key={it.name}
+                    style={{ display: "flex", alignItems: "center", gap: 8 }}
+                  >
+                    <img
+                      src={it.icon}
+                      alt="icon"
+                      style={{ width: 18, height: 18 }}
+                    />
+                    <span>{it.name}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {npc.relations?.length > 0 && (
             <div style={{ marginTop: 16 }}>
               <h4 style={{ margin: "0 0 8px" }}>Связи</h4>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                {npc.relations.map((r) => {
-                  const relationPath = getCharacterPath(r.id);
-                  const content = (
+                {npc.relations.map((r) => (
+                  <Link
+                    key={r.id}
+                    to={getCharacterPath(r.id)}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
                     <figure style={{ margin: 0, textAlign: "center" }}>
                       <img
                         src={r.portrait}
@@ -185,19 +205,8 @@ export default function NPCDetail() {
                         {r.label}
                       </figcaption>
                     </figure>
-                  );
-                  return relationPath ? (
-                    <Link
-                      key={r.id}
-                      to={relationPath}
-                      style={{ textDecoration: "none", color: "inherit" }}
-                    >
-                      {content}
-                    </Link>
-                  ) : (
-                    <div key={r.id}>{content}</div>
-                  );
-                })}
+                  </Link>
+                ))}
               </div>
             </div>
           )}
@@ -205,23 +214,7 @@ export default function NPCDetail() {
           {npc.city && (
             <div style={{ marginTop: 16 }}>
               <h4 style={{ margin: "0 0 8px" }}>Город</h4>
-              {(() => {
-                const city = cities.find((c) => c.name === npc.city);
-                return city ? (
-                  <Link
-                    to={`/world/cities/${city.id}`}
-                    style={{
-                      display: "inline-block",
-                      color: "#4da3ff",
-                      textDecoration: "none",
-                    }}
-                  >
-                    {npc.city}
-                  </Link>
-                ) : (
-                  <span>{npc.city}</span>
-                );
-              })()}
+              <div>{npc.city}</div>
             </div>
           )}
 
@@ -229,9 +222,12 @@ export default function NPCDetail() {
             <div style={{ marginTop: 16 }}>
               <h4 style={{ margin: "0 0 8px" }}>Фракции</h4>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                {npc.fractions.map((f) => {
-                  const fraction = fractions.find((fr) => fr.id === f.id);
-                  const content = (
+                {npc.fractions.map((f) => (
+                  <Link
+                    key={f.id}
+                    to={`/lore/fractions/${f.id}`}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
                     <div
                       style={{
                         display: "flex",
@@ -252,19 +248,8 @@ export default function NPCDetail() {
                       )}
                       <span style={{ fontSize: 12 }}>{f.name}</span>
                     </div>
-                  );
-                  return fraction ? (
-                    <Link
-                      key={f.id}
-                      to={`/lore/fractions/${f.id}`}
-                      style={{ textDecoration: "none", color: "inherit" }}
-                    >
-                      {content}
-                    </Link>
-                  ) : (
-                    <div key={f.id}>{content}</div>
-                  );
-                })}
+                  </Link>
+                ))}
               </div>
             </div>
           )}
@@ -286,8 +271,6 @@ function Block({ title, text }) {
 
 function parseTextWithLinks(text) {
   if (!text) return text;
-
-  // Парсим markdown-ссылки вида [текст](путь)
   const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
   const parts = [];
   let lastIndex = 0;
@@ -295,12 +278,9 @@ function parseTextWithLinks(text) {
   let keyCounter = 0;
 
   while ((match = linkRegex.exec(text)) !== null) {
-    // Добавляем текст до ссылки
     if (match.index > lastIndex) {
       parts.push(text.substring(lastIndex, match.index));
     }
-
-    // Добавляем ссылку
     const linkText = match[1];
     const linkPath = match[2];
     parts.push(
@@ -312,11 +292,9 @@ function parseTextWithLinks(text) {
         {linkText}
       </Link>,
     );
-
     lastIndex = match.index + match[0].length;
   }
 
-  // Добавляем оставшийся текст
   if (lastIndex < text.length) {
     parts.push(text.substring(lastIndex));
   }
@@ -362,12 +340,4 @@ function ListBlock({ title, items, icon }) {
       </ul>
     </div>
   );
-}
-
-function getCharacterPath(id) {
-  if (!id) return null;
-  if (id.startsWith("pc-")) return `/characters/players/${id}`;
-  if (id.startsWith("npc-")) return `/characters/npcs/${id}`;
-  if (id.startsWith("ally-")) return `/characters/allies/${id}`;
-  return null;
 }

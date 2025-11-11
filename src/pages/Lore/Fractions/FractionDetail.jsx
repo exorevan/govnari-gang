@@ -1,15 +1,88 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { fractions } from "../../../data/lore/fractions";
-import { playerCharacters } from "../../../data/characters/playerCharacters";
-import { npcs } from "../../../data/characters/npcs";
-import { allies } from "../../../data/characters/allies";
-import { cities } from "../../../data/world/cities";
-import { gods } from "../../../data/lore/gods";
 
 export default function FractionDetail() {
   const { id } = useParams();
-  const fraction = fractions.find((f) => (f.id ?? "") === id);
+  const [fraction, setFraction] = useState(null);
+  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        setLoading(true);
+
+        // Загружаем данные фракции
+        const fractionResponse = await fetch("/data/lore/fractions.json");
+        if (!fractionResponse.ok) {
+          throw new Error("Не удалось загрузить данные фракций");
+        }
+        const fractionsData = await fractionResponse.json();
+        const currentFraction = fractionsData.find((f) => f.id === id);
+
+        if (!currentFraction) {
+          throw new Error("Фракция не найдена");
+        }
+
+        setFraction(currentFraction);
+
+        // Загружаем данные персонажей для поиска членов фракции
+        const [pcResponse, npcResponse, alliesResponse] = await Promise.all([
+          fetch("/data/characters/playerCharacters.json"),
+          fetch("/data/characters/npcs.json"),
+          fetch("/data/characters/allies.json"),
+        ]);
+
+        const [playerCharacters, npcs, allies] = await Promise.all([
+          pcResponse.json(),
+          npcResponse.json(),
+          alliesResponse.json(),
+        ]);
+
+        // Находим всех персонажей, связанных с этой фракцией
+        const allMembers = [
+          ...playerCharacters.filter((pc) =>
+            pc.fractions?.some((f) => f.id === id),
+          ),
+          ...npcs.filter((npc) => npc.fractions?.some((f) => f.id === id)),
+          ...allies.filter((ally) => ally.fractions?.some((f) => f.id === id)),
+        ];
+
+        setMembers(allMembers);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadData();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <main style={{ padding: 24, textAlign: "center" }}>
+        <div>Загрузка данных фракции...</div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main style={{ padding: 24 }}>
+        <div style={{ color: "#ff4d4d", marginBottom: 16 }}>
+          Ошибка: {error}
+        </div>
+        <Link
+          to="/lore/fractions"
+          style={{ color: "#4da3ff", textDecoration: "none" }}
+        >
+          ← Назад ко всем фракциям
+        </Link>
+      </main>
+    );
+  }
 
   if (!fraction) {
     return (
@@ -21,13 +94,6 @@ export default function FractionDetail() {
       </main>
     );
   }
-
-  // Найти всех персонажей, связанных с этой фракцией
-  const members = [
-    ...playerCharacters.filter((pc) => pc.fractions?.some((f) => f.id === id)),
-    ...npcs.filter((npc) => npc.fractions?.some((f) => f.id === id)),
-    ...allies.filter((ally) => ally.fractions?.some((f) => f.id === id)),
-  ];
 
   return (
     <main style={{ padding: 24 }}>
@@ -74,7 +140,7 @@ export default function FractionDetail() {
               } else if (char.id.startsWith("npc-")) {
                 charPath = `/characters/npcs/${char.id}`;
               } else if (char.id.startsWith("ally-")) {
-                charPath = `/characters/allies`;
+                charPath = `/characters/allies/${char.id}`;
               }
               return charPath ? (
                 <Link
@@ -122,7 +188,6 @@ export default function FractionDetail() {
 function parseTextWithLinks(text) {
   if (!text) return text;
 
-  // Парсим markdown-ссылки вида [текст](путь)
   const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
   const parts = [];
   let lastIndex = 0;
@@ -130,12 +195,10 @@ function parseTextWithLinks(text) {
   let keyCounter = 0;
 
   while ((match = linkRegex.exec(text)) !== null) {
-    // Добавляем текст до ссылки
     if (match.index > lastIndex) {
       parts.push(text.substring(lastIndex, match.index));
     }
 
-    // Добавляем ссылку
     const linkText = match[1];
     const linkPath = match[2];
     parts.push(
@@ -151,7 +214,6 @@ function parseTextWithLinks(text) {
     lastIndex = match.index + match[0].length;
   }
 
-  // Добавляем оставшийся текст
   if (lastIndex < text.length) {
     parts.push(text.substring(lastIndex));
   }
